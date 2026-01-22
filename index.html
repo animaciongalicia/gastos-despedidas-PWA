@@ -6,22 +6,13 @@
     <meta name="theme-color" content="#E91E63">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Despedidas">
-    <meta name="description" content="Organiza los gastos de tu despedida de soltera/o - despedidasgalicia.es">
-    
     <title>Gestor de Despedidas | despedidasgalicia.es</title>
-    
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon-192.png">
-    
-    <!-- jsPDF for PDF export -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    
-    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-    
     <style>
         :root {
             --primary: #E91E63;
@@ -38,2232 +29,729 @@
             --text-muted: #6B7280;
             --border: #E5E7EB;
             --shadow: 0 4px 20px rgba(26, 26, 46, 0.08);
-            --shadow-lg: 0 8px 40px rgba(26, 26, 46, 0.12);
             --radius: 16px;
             --radius-sm: 10px;
         }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        body {
-            font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: var(--bg);
-            color: var(--text);
-            min-height: 100vh;
-            min-height: 100dvh;
-            overflow-x: hidden;
-        }
-
-        /* App Container */
-        .app {
-            max-width: 480px;
-            margin: 0 auto;
-            min-height: 100vh;
-            min-height: 100dvh;
-            position: relative;
-            background: var(--bg);
-        }
-
-        /* Screen Management */
-        .screen {
-            display: none;
-            min-height: 100vh;
-            min-height: 100dvh;
-            padding: 20px;
-            padding-bottom: 100px;
-            animation: fadeIn 0.3s ease;
-        }
-
-        .screen.active {
-            display: block;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* Header */
-        .header {
-            text-align: center;
-            padding: 20px 0 30px;
-        }
-
-        .header-logo {
-            font-family: 'Bebas Neue', sans-serif;
-            font-size: 28px;
-            color: var(--primary);
-            letter-spacing: 2px;
-            margin-bottom: 4px;
-        }
-
-        .header-subtitle {
-            font-size: 12px;
-            color: var(--text-muted);
-            font-weight: 500;
-        }
-
-        /* Hero Section */
-        .hero {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-            border-radius: var(--radius);
-            padding: 40px 24px;
-            text-align: center;
-            color: white;
-            margin-bottom: 30px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .hero::before {
-            content: '🎉';
-            position: absolute;
-            font-size: 120px;
-            opacity: 0.1;
-            top: -20px;
-            right: -20px;
-        }
-
-        .hero h1 {
-            font-family: 'Bebas Neue', sans-serif;
-            font-size: 36px;
-            letter-spacing: 1px;
-            margin-bottom: 10px;
-        }
-
-        .hero p {
-            font-size: 15px;
-            opacity: 0.9;
-            line-height: 1.5;
-        }
-
-        /* Buttons */
-        .btn {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            width: 100%;
-            padding: 18px 24px;
-            border: none;
-            border-radius: var(--radius-sm);
-            font-family: inherit;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        .btn-primary {
-            background: var(--primary);
-            color: white;
-        }
-
-        .btn-primary:hover, .btn-primary:active {
-            background: var(--primary-dark);
-            transform: scale(0.98);
-        }
-
-        .btn-secondary {
-            background: var(--bg-card);
-            color: var(--text);
-            border: 2px solid var(--border);
-        }
-
-        .btn-secondary:hover, .btn-secondary:active {
-            border-color: var(--primary);
-            color: var(--primary);
-        }
-
-        .btn-accent {
-            background: var(--accent);
-            color: var(--secondary);
-        }
-
-        .btn-small {
-            padding: 12px 20px;
-            font-size: 14px;
-        }
-
-        .btn-icon {
-            width: 48px;
-            height: 48px;
-            padding: 0;
-            border-radius: 50%;
-            font-size: 20px;
-        }
-
-        /* Form Elements */
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        .form-label {
-            display: block;
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--text);
-            margin-bottom: 8px;
-        }
-
-        .form-input {
-            width: 100%;
-            padding: 16px;
-            border: 2px solid var(--border);
-            border-radius: var(--radius-sm);
-            font-family: inherit;
-            font-size: 16px;
-            transition: border-color 0.2s;
-            background: var(--bg-card);
-        }
-
-        .form-input:focus {
-            outline: none;
-            border-color: var(--primary);
-        }
-
-        .form-input::placeholder {
-            color: var(--text-muted);
-        }
-
-        /* Cards */
-        .card {
-            background: var(--bg-card);
-            border-radius: var(--radius);
-            padding: 20px;
-            box-shadow: var(--shadow);
-            margin-bottom: 16px;
-        }
-
-        .card-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 16px;
-        }
-
-        .card-title {
-            font-size: 18px;
-            font-weight: 700;
-        }
-
-        /* Summary Stats */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
-            margin-bottom: 20px;
-        }
-
-        .stat-card {
-            background: var(--bg-card);
-            border-radius: var(--radius-sm);
-            padding: 16px;
-            text-align: center;
-            box-shadow: var(--shadow);
-        }
-
-        .stat-value {
-            font-family: 'Bebas Neue', sans-serif;
-            font-size: 32px;
-            color: var(--primary);
-            line-height: 1;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { font-family: 'DM Sans', -apple-system, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+        .app { max-width: 480px; margin: 0 auto; min-height: 100vh; background: var(--bg); }
+        .screen { display: none; min-height: 100vh; padding: 20px; padding-bottom: 100px; }
+        .screen.active { display: block; }
+        .header { text-align: center; padding: 20px 0 30px; }
+        .header-logo { font-family: 'Bebas Neue', sans-serif; font-size: 28px; color: var(--primary); letter-spacing: 2px; }
+        .header-subtitle { font-size: 12px; color: var(--text-muted); }
+        .hero { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); border-radius: var(--radius); padding: 40px 24px; text-align: center; color: white; margin-bottom: 30px; }
+        .hero h1 { font-family: 'Bebas Neue', sans-serif; font-size: 32px; margin-bottom: 10px; }
+        .hero p { font-size: 15px; opacity: 0.9; }
+        .btn { display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; padding: 18px 24px; border: none; border-radius: var(--radius-sm); font-family: inherit; font-size: 16px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-primary:active { background: var(--primary-dark); transform: scale(0.98); }
+        .btn-secondary { background: var(--bg-card); color: var(--text); border: 2px solid var(--border); }
+        .btn-accent { background: var(--accent); color: var(--secondary); }
+        .btn-small { padding: 12px 20px; font-size: 14px; }
+        .form-group { margin-bottom: 20px; }
+        .form-label { display: block; font-size: 14px; font-weight: 600; margin-bottom: 8px; }
+        .form-input { width: 100%; padding: 16px; border: 2px solid var(--border); border-radius: var(--radius-sm); font-family: inherit; font-size: 16px; background: var(--bg-card); }
+        .form-input:focus { outline: none; border-color: var(--primary); }
+        .card { background: var(--bg-card); border-radius: var(--radius); padding: 20px; box-shadow: var(--shadow); margin-bottom: 16px; }
+        .card-title { font-size: 18px; font-weight: 700; margin-bottom: 16px; }
+        .stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 20px; }
+        .stat-card { background: var(--bg-card); border-radius: var(--radius-sm); padding: 16px; text-align: center; box-shadow: var(--shadow); }
+        .stat-value { font-family: 'Bebas Neue', sans-serif; font-size: 32px; color: var(--primary); }
         .stat-value.success { color: var(--success); }
-        .stat-value.warning { color: var(--warning); }
         .stat-value.danger { color: var(--danger); }
-
-        .stat-label {
-            font-size: 12px;
-            color: var(--text-muted);
-            margin-top: 4px;
-            font-weight: 500;
-        }
-
-        /* Event Info Banner */
-        .event-banner {
-            background: linear-gradient(135deg, var(--secondary) 0%, #2D2D44 100%);
-            border-radius: var(--radius);
-            padding: 20px;
-            color: white;
-            margin-bottom: 20px;
-        }
-
-        .event-banner-top {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 12px;
-        }
-
-        .event-city {
-            font-family: 'Bebas Neue', sans-serif;
-            font-size: 24px;
-            letter-spacing: 1px;
-        }
-
-        .event-code {
-            background: rgba(255,255,255,0.15);
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-            letter-spacing: 1px;
-        }
-
-        .event-date {
-            font-size: 14px;
-            opacity: 0.8;
-        }
-
-        /* Attendee List */
-        .attendee-item {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            padding: 14px 0;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .attendee-item:last-child {
-            border-bottom: none;
-        }
-
-        .attendee-avatar {
-            width: 48px;
-            height: 48px;
-            border-radius: 50%;
-            background: var(--primary-light);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            font-size: 18px;
-            color: var(--primary);
-            flex-shrink: 0;
-        }
-
-        .attendee-avatar.vip {
-            background: var(--accent);
-            color: var(--secondary);
-        }
-
-        .attendee-avatar img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            border-radius: 50%;
-        }
-
-        .attendee-info {
-            flex: 1;
-            min-width: 0;
-        }
-
-        .attendee-name {
-            font-weight: 600;
-            font-size: 15px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .badge {
-            font-size: 10px;
-            padding: 3px 8px;
-            border-radius: 20px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .badge-vip {
-            background: var(--accent);
-            color: var(--secondary);
-        }
-
-        .badge-paid {
-            background: var(--success);
-            color: white;
-        }
-
-        .badge-partial {
-            background: var(--warning);
-            color: white;
-        }
-
-        .badge-pending {
-            background: var(--danger);
-            color: white;
-        }
-
-        .attendee-amount {
-            font-size: 13px;
-            color: var(--text-muted);
-        }
-
-        .attendee-amount strong {
-            color: var(--text);
-        }
-
-        .attendee-actions {
-            display: flex;
-            gap: 8px;
-        }
-
-        /* Expense Categories */
-        .category-item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 16px;
-            background: var(--bg-card);
-            border-radius: var(--radius-sm);
-            margin-bottom: 10px;
-            box-shadow: var(--shadow);
-            cursor: pointer;
-            transition: transform 0.2s;
-        }
-
-        .category-item:active {
-            transform: scale(0.98);
-        }
-
-        .category-left {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-        }
-
-        .category-icon {
-            width: 44px;
-            height: 44px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 22px;
-        }
-
-        .category-name {
-            font-weight: 600;
-            font-size: 15px;
-        }
-
-        .category-count {
-            font-size: 12px;
-            color: var(--text-muted);
-        }
-
-        .category-amount {
-            font-weight: 700;
-            font-size: 16px;
-        }
-
-        /* Bottom Navigation */
-        .bottom-nav {
-            position: fixed;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 100%;
-            max-width: 480px;
-            background: var(--bg-card);
-            border-top: 1px solid var(--border);
-            display: flex;
-            justify-content: space-around;
-            padding: 10px 0;
-            padding-bottom: calc(10px + env(safe-area-inset-bottom));
-            z-index: 100;
-            box-shadow: 0 -4px 20px rgba(0,0,0,0.05);
-        }
-
-        .nav-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 4px;
-            padding: 8px 16px;
-            border: none;
-            background: none;
-            cursor: pointer;
-            color: var(--text-muted);
-            transition: color 0.2s;
-        }
-
-        .nav-item.active {
-            color: var(--primary);
-        }
-
-        .nav-item span {
-            font-size: 11px;
-            font-weight: 600;
-        }
-
-        .nav-icon {
-            font-size: 24px;
-        }
-
-        /* Modal */
-        .modal-overlay {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(26, 26, 46, 0.6);
-            backdrop-filter: blur(4px);
-            z-index: 200;
-            align-items: flex-end;
-            justify-content: center;
-        }
-
-        .modal-overlay.active {
-            display: flex;
-        }
-
-        .modal {
-            background: var(--bg-card);
-            width: 100%;
-            max-width: 480px;
-            border-radius: var(--radius) var(--radius) 0 0;
-            padding: 24px;
-            padding-bottom: calc(24px + env(safe-area-inset-bottom));
-            animation: slideUp 0.3s ease;
-            max-height: 90vh;
-            overflow-y: auto;
-        }
-
-        @keyframes slideUp {
-            from { transform: translateY(100%); }
-            to { transform: translateY(0); }
-        }
-
-        .modal-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 24px;
-        }
-
-        .modal-title {
-            font-size: 20px;
-            font-weight: 700;
-        }
-
-        .modal-close {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            border: none;
-            background: var(--bg);
-            cursor: pointer;
-            font-size: 18px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        /* Toggle Switch */
-        .toggle-group {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 12px 0;
-        }
-
-        .toggle-label {
-            font-size: 15px;
-            font-weight: 500;
-        }
-
-        .toggle {
-            width: 52px;
-            height: 28px;
-            background: var(--border);
-            border-radius: 20px;
-            position: relative;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-
-        .toggle.active {
-            background: var(--primary);
-        }
-
-        .toggle::after {
-            content: '';
-            position: absolute;
-            width: 22px;
-            height: 22px;
-            background: white;
-            border-radius: 50%;
-            top: 3px;
-            left: 3px;
-            transition: transform 0.2s;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-        }
-
-        .toggle.active::after {
-            transform: translateX(24px);
-        }
-
-        /* Chips/Tags */
-        .chips {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-top: 10px;
-        }
-
-        .chip {
-            padding: 8px 14px;
-            background: var(--bg);
-            border: 2px solid var(--border);
-            border-radius: 20px;
-            font-size: 13px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .chip.selected {
-            background: var(--primary-light);
-            border-color: var(--primary);
-            color: var(--primary);
-        }
-
-        /* Share Section */
-        .share-box {
-            background: var(--bg);
-            border-radius: var(--radius-sm);
-            padding: 16px;
-            margin-bottom: 16px;
-        }
-
-        .share-code {
-            font-family: 'Bebas Neue', monospace;
-            font-size: 28px;
-            letter-spacing: 3px;
-            text-align: center;
-            color: var(--primary);
-            padding: 16px;
-            background: var(--bg-card);
-            border-radius: var(--radius-sm);
-            margin-bottom: 12px;
-        }
-
-        .share-buttons {
-            display: flex;
-            gap: 10px;
-        }
-
-        .share-buttons .btn {
-            flex: 1;
-        }
-
-        /* Empty State */
-        .empty-state {
-            text-align: center;
-            padding: 40px 20px;
-            color: var(--text-muted);
-        }
-
-        .empty-state-icon {
-            font-size: 48px;
-            margin-bottom: 16px;
-            opacity: 0.5;
-        }
-
-        .empty-state-text {
-            font-size: 15px;
-            line-height: 1.5;
-        }
-
-        /* Expense Detail */
-        .expense-item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 14px;
-            background: var(--bg);
-            border-radius: var(--radius-sm);
-            margin-bottom: 8px;
-        }
-
-        .expense-info {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .expense-name {
-            font-weight: 600;
-            font-size: 14px;
-        }
-
-        .expense-payer {
-            font-size: 12px;
-            color: var(--text-muted);
-        }
-
-        .expense-amount {
-            font-weight: 700;
-            font-size: 15px;
-        }
-
-        /* Summary Table */
-        .summary-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        .summary-table th,
-        .summary-table td {
-            padding: 12px;
-            text-align: left;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .summary-table th {
-            font-size: 12px;
-            font-weight: 600;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .summary-table td {
-            font-size: 14px;
-        }
-
-        .summary-table .amount {
-            text-align: right;
-            font-weight: 700;
-        }
-
-        .summary-table .total-row {
-            background: var(--bg);
-            font-weight: 700;
-        }
-
-        /* WhatsApp Message Preview */
-        .whatsapp-preview {
-            background: #DCF8C6;
-            border-radius: var(--radius-sm);
-            padding: 16px;
-            font-size: 14px;
-            line-height: 1.6;
-            white-space: pre-wrap;
-            max-height: 300px;
-            overflow-y: auto;
-        }
-
-        /* Utility Classes */
+        .stat-label { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+        .event-banner { background: linear-gradient(135deg, var(--secondary), #2D2D44); border-radius: var(--radius); padding: 20px; color: white; margin-bottom: 20px; }
+        .event-city { font-family: 'Bebas Neue', sans-serif; font-size: 24px; }
+        .event-code { background: rgba(255,255,255,0.15); padding: 6px 12px; border-radius: 20px; font-size: 12px; display: inline-block; margin-top: 8px; cursor: pointer; }
+        .event-date { font-size: 14px; opacity: 0.8; margin-top: 4px; }
+        .attendee-item { display: flex; align-items: center; gap: 14px; padding: 14px 0; border-bottom: 1px solid var(--border); }
+        .attendee-item:last-child { border-bottom: none; }
+        .attendee-avatar { width: 48px; height: 48px; border-radius: 50%; background: var(--primary-light); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 18px; color: var(--primary); }
+        .attendee-avatar.vip { background: var(--accent); color: var(--secondary); }
+        .attendee-info { flex: 1; }
+        .attendee-name { font-weight: 600; font-size: 15px; display: flex; align-items: center; gap: 8px; }
+        .badge { font-size: 10px; padding: 3px 8px; border-radius: 20px; font-weight: 600; }
+        .badge-vip { background: var(--accent); color: var(--secondary); }
+        .badge-paid { background: var(--success); color: white; }
+        .badge-pending { background: var(--danger); color: white; }
+        .attendee-amount { font-size: 13px; color: var(--text-muted); }
+        .category-item { display: flex; align-items: center; justify-content: space-between; padding: 16px; background: var(--bg-card); border-radius: var(--radius-sm); margin-bottom: 10px; box-shadow: var(--shadow); cursor: pointer; }
+        .category-left { display: flex; align-items: center; gap: 14px; }
+        .category-icon { width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 22px; }
+        .category-name { font-weight: 600; }
+        .category-count { font-size: 12px; color: var(--text-muted); }
+        .category-amount { font-weight: 700; }
+        .bottom-nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 480px; background: var(--bg-card); border-top: 1px solid var(--border); display: none; justify-content: space-around; padding: 10px 0 20px; z-index: 100; }
+        .bottom-nav.visible { display: flex; }
+        .nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 8px 16px; border: none; background: none; cursor: pointer; color: var(--text-muted); }
+        .nav-item.active { color: var(--primary); }
+        .nav-item span:first-child { font-size: 24px; }
+        .nav-item span:last-child { font-size: 11px; font-weight: 600; }
+        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 200; align-items: flex-end; justify-content: center; }
+        .modal-overlay.active { display: flex; }
+        .modal { background: var(--bg-card); width: 100%; max-width: 480px; border-radius: var(--radius) var(--radius) 0 0; padding: 24px; max-height: 90vh; overflow-y: auto; }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+        .modal-title { font-size: 20px; font-weight: 700; }
+        .modal-close { width: 36px; height: 36px; border-radius: 50%; border: none; background: var(--bg); cursor: pointer; font-size: 18px; }
+        .toggle-group { display: flex; align-items: center; justify-content: space-between; padding: 12px 0; }
+        .toggle { width: 52px; height: 28px; background: var(--border); border-radius: 20px; position: relative; cursor: pointer; }
+        .toggle.active { background: var(--primary); }
+        .toggle::after { content: ''; position: absolute; width: 22px; height: 22px; background: white; border-radius: 50%; top: 3px; left: 3px; transition: transform 0.2s; }
+        .toggle.active::after { transform: translateX(24px); }
+        .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+        .chip { padding: 8px 14px; background: var(--bg); border: 2px solid var(--border); border-radius: 20px; font-size: 13px; cursor: pointer; }
+        .chip.selected { background: var(--primary-light); border-color: var(--primary); color: var(--primary); }
+        .expense-item { display: flex; justify-content: space-between; padding: 14px; background: var(--bg); border-radius: var(--radius-sm); margin-bottom: 8px; }
+        .expense-name { font-weight: 600; font-size: 14px; }
+        .expense-payer { font-size: 12px; color: var(--text-muted); }
+        .expense-amount { font-weight: 700; }
+        .empty-state { text-align: center; padding: 40px 20px; color: var(--text-muted); }
+        .empty-state-icon { font-size: 48px; margin-bottom: 16px; }
+        .back-btn { display: flex; align-items: center; gap: 8px; background: none; border: none; color: var(--text-muted); font-size: 14px; cursor: pointer; padding: 8px 0; margin-bottom: 16px; }
+        .divider { display: flex; align-items: center; gap: 16px; margin: 24px 0; color: var(--text-muted); font-size: 13px; }
+        .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+        .toast { position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%) translateY(100px); background: var(--secondary); color: white; padding: 14px 24px; border-radius: var(--radius-sm); font-size: 14px; z-index: 300; opacity: 0; transition: all 0.3s; }
+        .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+        .whatsapp-preview { background: #DCF8C6; border-radius: var(--radius-sm); padding: 16px; font-size: 14px; line-height: 1.6; white-space: pre-wrap; max-height: 300px; overflow-y: auto; }
+        .share-code { font-family: 'Bebas Neue', monospace; font-size: 28px; letter-spacing: 3px; text-align: center; color: var(--primary); padding: 16px; background: var(--bg); border-radius: var(--radius-sm); margin-bottom: 12px; }
         .mb-20 { margin-bottom: 20px; }
-        .mb-30 { margin-bottom: 30px; }
         .mt-20 { margin-top: 20px; }
         .text-center { text-align: center; }
         .text-muted { color: var(--text-muted); }
-        .text-success { color: var(--success); }
-        .text-danger { color: var(--danger); }
-        .flex-between { display: flex; justify-content: space-between; align-items: center; }
-
-        /* Divider */
-        .divider {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            margin: 24px 0;
-            color: var(--text-muted);
-            font-size: 13px;
-        }
-
-        .divider::before,
-        .divider::after {
-            content: '';
-            flex: 1;
-            height: 1px;
-            background: var(--border);
-        }
-
-        /* Back Button */
-        .back-btn {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            background: none;
-            border: none;
-            color: var(--text-muted);
-            font-size: 14px;
-            font-weight: 500;
-            cursor: pointer;
-            padding: 8px 0;
-            margin-bottom: 16px;
-        }
-
-        /* Delete Button */
-        .delete-btn {
-            color: var(--danger);
-            background: none;
-            border: none;
-            font-size: 18px;
-            cursor: pointer;
-            padding: 8px;
-        }
-
-        /* Loading Spinner */
-        .spinner {
-            width: 24px;
-            height: 24px;
-            border: 3px solid var(--border);
-            border-top-color: var(--primary);
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        /* Toast Notification */
-        .toast {
-            position: fixed;
-            bottom: 100px;
-            left: 50%;
-            transform: translateX(-50%) translateY(100px);
-            background: var(--secondary);
-            color: white;
-            padding: 14px 24px;
-            border-radius: var(--radius-sm);
-            font-size: 14px;
-            font-weight: 500;
-            z-index: 300;
-            opacity: 0;
-            transition: all 0.3s ease;
-            box-shadow: var(--shadow-lg);
-        }
-
-        .toast.show {
-            opacity: 1;
-            transform: translateX(-50%) translateY(0);
-        }
-
-        /* Read Only View Indicator */
-        .readonly-banner {
-            background: var(--warning);
-            color: white;
-            text-align: center;
-            padding: 10px;
-            font-size: 13px;
-            font-weight: 600;
-        }
     </style>
 </head>
 <body>
     <div class="app" id="app">
-        
-        <!-- SCREEN: Home -->
+        <!-- HOME -->
         <div class="screen active" id="screen-home">
             <div class="header">
                 <div class="header-logo">DESPEDIDAS GALICIA</div>
                 <div class="header-subtitle">Gestor de Gastos</div>
             </div>
-
             <div class="hero">
-                <h1>ORGANIZA TU DESPEDIDA</h1>
+                <h1>🎉 ORGANIZA TU DESPEDIDA</h1>
                 <p>Controla gastos, pagos y divide cuentas sin dramas. El novio/a nunca paga.</p>
             </div>
-
-            <button class="btn btn-primary mb-20" onclick="showScreen('screen-create')">
-                🎉 Crear nueva despedida
-            </button>
-
+            <button class="btn btn-primary mb-20" id="btn-create">🎉 Crear nueva despedida</button>
             <div class="divider">o</div>
-
-            <button class="btn btn-secondary" onclick="showModal('modal-recover')">
-                🔑 Tengo un código
-            </button>
-
-            <div class="mt-20 text-center">
-                <p class="text-muted" style="font-size: 12px;">
-                    📞 678 288 284 · despedidasgalicia.es
-                </p>
-            </div>
+            <button class="btn btn-secondary" id="btn-recover">🔑 Tengo un código</button>
+            <p class="text-center text-muted mt-20" style="font-size:12px">📞 678 288 284 · despedidasgalicia.es</p>
         </div>
 
-        <!-- SCREEN: Create Event -->
+        <!-- CREATE -->
         <div class="screen" id="screen-create">
-            <button class="back-btn" onclick="showScreen('screen-home')">
-                ← Volver
-            </button>
-
-            <h2 style="font-size: 24px; margin-bottom: 8px;">Nueva Despedida</h2>
-            <p class="text-muted mb-30">Rellena los datos para empezar</p>
-
-            <form id="form-create" onsubmit="createEvent(event)">
-                <div class="form-group">
-                    <label class="form-label">Tu nombre *</label>
-                    <input type="text" class="form-input" id="org-name" placeholder="¿Cómo te llamas?" required>
+            <button class="back-btn" id="btn-back-home">← Volver</button>
+            <h2 style="font-size:24px;margin-bottom:8px">Nueva Despedida</h2>
+            <p class="text-muted mb-20">Rellena los datos para empezar</p>
+            <div class="form-group">
+                <label class="form-label">Tu nombre *</label>
+                <input type="text" class="form-input" id="inp-name" placeholder="¿Cómo te llamas?">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Tu WhatsApp *</label>
+                <input type="tel" class="form-input" id="inp-phone" placeholder="678 123 456">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Ciudad del evento *</label>
+                <input type="text" class="form-input" id="inp-city" placeholder="A Coruña, Vigo, Santiago...">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Fecha del evento *</label>
+                <input type="date" class="form-input" id="inp-date">
+            </div>
+            <div class="form-group">
+                <label class="form-label">¿Despedida de...?</label>
+                <div class="chips" id="type-chips">
+                    <span class="chip selected" data-type="soltera">👰 Soltera</span>
+                    <span class="chip" data-type="soltero">🤵 Soltero</span>
                 </div>
-
-                <div class="form-group">
-                    <label class="form-label">Tu WhatsApp *</label>
-                    <input type="tel" class="form-input" id="org-phone" placeholder="678 123 456" required>
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label">Ciudad del evento *</label>
-                    <input type="text" class="form-input" id="event-city" placeholder="A Coruña, Vigo, Santiago..." required>
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label">Fecha del evento *</label>
-                    <input type="date" class="form-input" id="event-date" required>
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label">¿Despedida de...?</label>
-                    <div class="chips" id="type-chips">
-                        <span class="chip selected" data-type="soltera" onclick="selectTypeChip(this)">👰 Soltera</span>
-                        <span class="chip" data-type="soltero" onclick="selectTypeChip(this)">🤵 Soltero</span>
-                    </div>
-                </div>
-
-                <button type="submit" class="btn btn-primary mt-20">
-                    Crear despedida 🚀
-                </button>
-            </form>
+            </div>
+            <button class="btn btn-primary mt-20" id="btn-submit-create">Crear despedida 🚀</button>
         </div>
 
-        <!-- SCREEN: Dashboard -->
+        <!-- DASHBOARD -->
         <div class="screen" id="screen-dashboard">
             <div class="event-banner">
-                <div class="event-banner-top">
-                    <div>
-                        <div class="event-city" id="dash-city">A Coruña</div>
-                        <div class="event-date" id="dash-date">15 de marzo, 2025</div>
-                    </div>
-                    <div class="event-code" id="dash-code" onclick="copyCode()">DESP-XXXX</div>
-                </div>
+                <div class="event-city" id="dash-city">-</div>
+                <div class="event-date" id="dash-date">-</div>
+                <div class="event-code" id="dash-code">-</div>
             </div>
-
             <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-value" id="stat-total">0€</div>
-                    <div class="stat-label">Total gastos</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-value" id="stat-perperson">0€</div>
-                    <div class="stat-label">Por persona</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-value success" id="stat-paid">0€</div>
-                    <div class="stat-label">Pagado</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-value danger" id="stat-pending">0€</div>
-                    <div class="stat-label">Pendiente</div>
-                </div>
+                <div class="stat-card"><div class="stat-value" id="stat-total">0€</div><div class="stat-label">Total</div></div>
+                <div class="stat-card"><div class="stat-value" id="stat-perperson">0€</div><div class="stat-label">Por persona</div></div>
+                <div class="stat-card"><div class="stat-value success" id="stat-paid">0€</div><div class="stat-label">Pagado</div></div>
+                <div class="stat-card"><div class="stat-value danger" id="stat-pending">0€</div><div class="stat-label">Pendiente</div></div>
             </div>
-
             <div class="card">
-                <div class="card-header">
-                    <span class="card-title">Acciones rápidas</span>
-                </div>
-                <div style="display: flex; gap: 10px;">
-                    <button class="btn btn-secondary btn-small" style="flex:1" onclick="showModal('modal-share')">
-                        📤 Compartir
-                    </button>
-                    <button class="btn btn-accent btn-small" style="flex:1" onclick="generateWhatsApp()">
-                        💬 WhatsApp
-                    </button>
+                <div style="display:flex;gap:10px">
+                    <button class="btn btn-secondary btn-small" style="flex:1" id="btn-share">📤 Compartir</button>
+                    <button class="btn btn-accent btn-small" style="flex:1" id="btn-whatsapp">💬 WhatsApp</button>
                 </div>
             </div>
-
-            <!-- Bottom Nav -->
-            <nav class="bottom-nav">
-                <button class="nav-item active" onclick="showScreen('screen-dashboard')">
-                    <span class="nav-icon">🏠</span>
-                    <span>Inicio</span>
-                </button>
-                <button class="nav-item" onclick="showScreen('screen-attendees')">
-                    <span class="nav-icon">👥</span>
-                    <span>Asistentes</span>
-                </button>
-                <button class="nav-item" onclick="showScreen('screen-expenses')">
-                    <span class="nav-icon">💰</span>
-                    <span>Gastos</span>
-                </button>
-                <button class="nav-item" onclick="showScreen('screen-summary')">
-                    <span class="nav-icon">📊</span>
-                    <span>Resumen</span>
-                </button>
-            </nav>
         </div>
 
-        <!-- SCREEN: Attendees -->
+        <!-- ATTENDEES -->
         <div class="screen" id="screen-attendees">
-            <h2 style="font-size: 24px; margin-bottom: 20px;">Asistentes</h2>
-
-            <div id="attendees-list">
-                <!-- Dynamic content -->
-            </div>
-
-            <button class="btn btn-primary mt-20" onclick="showModal('modal-add-attendee')">
-                ➕ Añadir asistente
-            </button>
-
-            <!-- Bottom Nav -->
-            <nav class="bottom-nav">
-                <button class="nav-item" onclick="showScreen('screen-dashboard')">
-                    <span class="nav-icon">🏠</span>
-                    <span>Inicio</span>
-                </button>
-                <button class="nav-item active" onclick="showScreen('screen-attendees')">
-                    <span class="nav-icon">👥</span>
-                    <span>Asistentes</span>
-                </button>
-                <button class="nav-item" onclick="showScreen('screen-expenses')">
-                    <span class="nav-icon">💰</span>
-                    <span>Gastos</span>
-                </button>
-                <button class="nav-item" onclick="showScreen('screen-summary')">
-                    <span class="nav-icon">📊</span>
-                    <span>Resumen</span>
-                </button>
-            </nav>
+            <h2 style="font-size:24px;margin-bottom:20px">Asistentes</h2>
+            <div id="attendees-list"></div>
+            <button class="btn btn-primary mt-20" id="btn-add-attendee">➕ Añadir asistente</button>
         </div>
 
-        <!-- SCREEN: Expenses -->
+        <!-- EXPENSES -->
         <div class="screen" id="screen-expenses">
-            <h2 style="font-size: 24px; margin-bottom: 20px;">Gastos</h2>
-
-            <div id="categories-list">
-                <!-- Dynamic content -->
-            </div>
-
-            <button class="btn btn-secondary mt-20" onclick="showModal('modal-add-category')">
-                ➕ Nueva categoría
-            </button>
-
-            <!-- Bottom Nav -->
-            <nav class="bottom-nav">
-                <button class="nav-item" onclick="showScreen('screen-dashboard')">
-                    <span class="nav-icon">🏠</span>
-                    <span>Inicio</span>
-                </button>
-                <button class="nav-item" onclick="showScreen('screen-attendees')">
-                    <span class="nav-icon">👥</span>
-                    <span>Asistentes</span>
-                </button>
-                <button class="nav-item active" onclick="showScreen('screen-expenses')">
-                    <span class="nav-icon">💰</span>
-                    <span>Gastos</span>
-                </button>
-                <button class="nav-item" onclick="showScreen('screen-summary')">
-                    <span class="nav-icon">📊</span>
-                    <span>Resumen</span>
-                </button>
-            </nav>
+            <h2 style="font-size:24px;margin-bottom:20px">Gastos</h2>
+            <div id="categories-list"></div>
+            <button class="btn btn-secondary mt-20" id="btn-add-category">➕ Nueva categoría</button>
         </div>
 
-        <!-- SCREEN: Summary -->
+        <!-- SUMMARY -->
         <div class="screen" id="screen-summary">
-            <h2 style="font-size: 24px; margin-bottom: 20px;">Resumen Final</h2>
-
+            <h2 style="font-size:24px;margin-bottom:20px">Resumen Final</h2>
             <div class="card mb-20">
-                <div class="card-title mb-20">Desglose por persona</div>
-                <div id="summary-breakdown">
-                    <!-- Dynamic content -->
-                </div>
+                <div class="card-title">Por persona</div>
+                <div id="summary-persons"></div>
             </div>
-
             <div class="card mb-20">
-                <div class="card-title mb-20">Desglose por categoría</div>
-                <table class="summary-table" id="summary-categories">
-                    <!-- Dynamic content -->
-                </table>
+                <div class="card-title">Por categoría</div>
+                <div id="summary-categories"></div>
             </div>
-
-            <div style="display: flex; gap: 10px;">
-                <button class="btn btn-secondary" style="flex:1" onclick="exportPDF()">
-                    📄 PDF
-                </button>
-                <button class="btn btn-secondary" style="flex:1" onclick="showModal('modal-share')">
-                    📤 Compartir
-                </button>
-                <button class="btn btn-primary" style="flex:1" onclick="generateWhatsApp()">
-                    💬 WhatsApp
-                </button>
+            <div style="display:flex;gap:10px">
+                <button class="btn btn-secondary" style="flex:1" id="btn-pdf">📄 PDF</button>
+                <button class="btn btn-primary" style="flex:1" id="btn-whatsapp2">💬 WhatsApp</button>
             </div>
-
-            <!-- Bottom Nav -->
-            <nav class="bottom-nav">
-                <button class="nav-item" onclick="showScreen('screen-dashboard')">
-                    <span class="nav-icon">🏠</span>
-                    <span>Inicio</span>
-                </button>
-                <button class="nav-item" onclick="showScreen('screen-attendees')">
-                    <span class="nav-icon">👥</span>
-                    <span>Asistentes</span>
-                </button>
-                <button class="nav-item" onclick="showScreen('screen-expenses')">
-                    <span class="nav-icon">💰</span>
-                    <span>Gastos</span>
-                </button>
-                <button class="nav-item active" onclick="showScreen('screen-summary')">
-                    <span class="nav-icon">📊</span>
-                    <span>Resumen</span>
-                </button>
-            </nav>
         </div>
 
-        <!-- SCREEN: Category Detail -->
+        <!-- CATEGORY DETAIL -->
         <div class="screen" id="screen-category">
-            <button class="back-btn" onclick="showScreen('screen-expenses')">
-                ← Volver a gastos
-            </button>
-
-            <div class="flex-between mb-20">
-                <h2 style="font-size: 24px;" id="category-title">Categoría</h2>
-                <span id="category-total" style="font-weight:700; font-size:18px;">0€</span>
+            <button class="back-btn" id="btn-back-expenses">← Volver</button>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+                <h2 id="cat-title">-</h2>
+                <span id="cat-total" style="font-weight:700">0€</span>
             </div>
-
-            <div id="expenses-list">
-                <!-- Dynamic content -->
-            </div>
-
-            <button class="btn btn-primary mt-20" onclick="showModal('modal-add-expense')">
-                ➕ Añadir gasto
-            </button>
+            <div id="expenses-list"></div>
+            <button class="btn btn-primary mt-20" id="btn-add-expense">➕ Añadir gasto</button>
         </div>
 
-        <!-- MODAL: Recover Event -->
+        <!-- NAV -->
+        <nav class="bottom-nav" id="bottom-nav">
+            <button class="nav-item active" data-screen="screen-dashboard"><span>🏠</span><span>Inicio</span></button>
+            <button class="nav-item" data-screen="screen-attendees"><span>👥</span><span>Asistentes</span></button>
+            <button class="nav-item" data-screen="screen-expenses"><span>💰</span><span>Gastos</span></button>
+            <button class="nav-item" data-screen="screen-summary"><span>📊</span><span>Resumen</span></button>
+        </nav>
+
+        <!-- MODALS -->
         <div class="modal-overlay" id="modal-recover">
             <div class="modal">
-                <div class="modal-header">
-                    <span class="modal-title">Recuperar despedida</span>
-                    <button class="modal-close" onclick="closeModal('modal-recover')">✕</button>
-                </div>
-                <form onsubmit="recoverEvent(event)">
-                    <div class="form-group">
-                        <label class="form-label">Código del evento</label>
-                        <input type="text" class="form-input" id="recover-code" placeholder="DESP-XXXXX" style="text-transform: uppercase;">
-                    </div>
-                    <button type="submit" class="btn btn-primary">Acceder</button>
-                </form>
+                <div class="modal-header"><span class="modal-title">Recuperar despedida</span><button class="modal-close" data-close="modal-recover">✕</button></div>
+                <div class="form-group"><label class="form-label">Código</label><input type="text" class="form-input" id="inp-recover" placeholder="DESP-XXXXX" style="text-transform:uppercase"></div>
+                <button class="btn btn-primary" id="btn-submit-recover">Acceder</button>
             </div>
         </div>
 
-        <!-- MODAL: Add Attendee -->
-        <div class="modal-overlay" id="modal-add-attendee">
+        <div class="modal-overlay" id="modal-attendee">
             <div class="modal">
-                <div class="modal-header">
-                    <span class="modal-title">Añadir asistente</span>
-                    <button class="modal-close" onclick="closeModal('modal-add-attendee')">✕</button>
-                </div>
-                <form onsubmit="addAttendee(event)">
-                    <div class="form-group">
-                        <label class="form-label">Nombre o apodo *</label>
-                        <input type="text" class="form-input" id="attendee-name" placeholder="Pepe, El Loco, María..." required>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Teléfono (opcional)</label>
-                        <input type="tel" class="form-input" id="attendee-phone" placeholder="678 123 456">
-                    </div>
-                    <div class="toggle-group">
-                        <span class="toggle-label">👑 Es el novio/a (no paga)</span>
-                        <div class="toggle" id="toggle-vip" onclick="this.classList.toggle('active')"></div>
-                    </div>
-                    <button type="submit" class="btn btn-primary mt-20">Añadir</button>
-                </form>
+                <div class="modal-header"><span class="modal-title">Añadir asistente</span><button class="modal-close" data-close="modal-attendee">✕</button></div>
+                <div class="form-group"><label class="form-label">Nombre *</label><input type="text" class="form-input" id="inp-att-name" placeholder="Pepe, María..."></div>
+                <div class="form-group"><label class="form-label">Teléfono</label><input type="tel" class="form-input" id="inp-att-phone" placeholder="678 123 456"></div>
+                <div class="toggle-group"><span>👑 Es el novio/a (no paga)</span><div class="toggle" id="toggle-vip"></div></div>
+                <button class="btn btn-primary mt-20" id="btn-submit-attendee">Añadir</button>
             </div>
         </div>
 
-        <!-- MODAL: Add Category -->
-        <div class="modal-overlay" id="modal-add-category">
+        <div class="modal-overlay" id="modal-category">
             <div class="modal">
-                <div class="modal-header">
-                    <span class="modal-title">Nueva categoría</span>
-                    <button class="modal-close" onclick="closeModal('modal-add-category')">✕</button>
+                <div class="modal-header"><span class="modal-title">Nueva categoría</span><button class="modal-close" data-close="modal-category">✕</button></div>
+                <div class="form-group"><label class="form-label">Nombre *</label><input type="text" class="form-input" id="inp-cat-name" placeholder="Stripper, Barco..."></div>
+                <div class="form-group"><label class="form-label">Icono</label>
+                    <div class="chips" id="icon-chips">
+                        <span class="chip selected" data-icon="🎯">🎯</span><span class="chip" data-icon="🚤">🚤</span><span class="chip" data-icon="💃">💃</span><span class="chip" data-icon="🎮">🎮</span><span class="chip" data-icon="🍻">🍻</span><span class="chip" data-icon="🎁">🎁</span>
+                    </div>
                 </div>
-                <form onsubmit="addCategory(event)">
-                    <div class="form-group">
-                        <label class="form-label">Nombre de la categoría *</label>
-                        <input type="text" class="form-input" id="category-name" placeholder="Stripper, Barco, Spa..." required>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Icono</label>
-                        <div class="chips" id="icon-chips">
-                            <span class="chip selected" data-icon="🎯" onclick="selectIcon(this)">🎯</span>
-                            <span class="chip" data-icon="🚤" onclick="selectIcon(this)">🚤</span>
-                            <span class="chip" data-icon="💃" onclick="selectIcon(this)">💃</span>
-                            <span class="chip" data-icon="🎮" onclick="selectIcon(this)">🎮</span>
-                            <span class="chip" data-icon="🍻" onclick="selectIcon(this)">🍻</span>
-                            <span class="chip" data-icon="🎁" onclick="selectIcon(this)">🎁</span>
-                            <span class="chip" data-icon="🚌" onclick="selectIcon(this)">🚌</span>
-                            <span class="chip" data-icon="💅" onclick="selectIcon(this)">💅</span>
-                        </div>
-                    </div>
-                    <button type="submit" class="btn btn-primary mt-20">Crear categoría</button>
-                </form>
+                <button class="btn btn-primary mt-20" id="btn-submit-category">Crear</button>
             </div>
         </div>
 
-        <!-- MODAL: Add Expense -->
-        <div class="modal-overlay" id="modal-add-expense">
+        <div class="modal-overlay" id="modal-expense">
             <div class="modal">
-                <div class="modal-header">
-                    <span class="modal-title">Añadir gasto</span>
-                    <button class="modal-close" onclick="closeModal('modal-add-expense')">✕</button>
-                </div>
-                <form onsubmit="addExpense(event)">
-                    <div class="form-group">
-                        <label class="form-label">Concepto *</label>
-                        <input type="text" class="form-input" id="expense-name" placeholder="Reserva, Entrada, Consumición..." required>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Importe (€) *</label>
-                        <input type="number" class="form-input" id="expense-amount" placeholder="0" step="0.01" required>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">¿Quién lo pagó?</label>
-                        <select class="form-input" id="expense-payer">
-                            <option value="">Bote común / Nadie aún</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">¿Quiénes participan?</label>
-                        <div class="chips" id="expense-participants">
-                            <!-- Dynamic -->
-                        </div>
-                    </div>
-                    <button type="submit" class="btn btn-primary mt-20">Añadir gasto</button>
-                </form>
+                <div class="modal-header"><span class="modal-title">Añadir gasto</span><button class="modal-close" data-close="modal-expense">✕</button></div>
+                <div class="form-group"><label class="form-label">Concepto *</label><input type="text" class="form-input" id="inp-exp-name" placeholder="Reserva, Entrada..."></div>
+                <div class="form-group"><label class="form-label">Importe € *</label><input type="number" class="form-input" id="inp-exp-amount" placeholder="0" step="0.01"></div>
+                <div class="form-group"><label class="form-label">¿Quién pagó?</label><select class="form-input" id="inp-exp-payer"><option value="">Nadie aún</option></select></div>
+                <div class="form-group"><label class="form-label">¿Quiénes participan?</label><div class="chips" id="exp-participants"></div></div>
+                <button class="btn btn-primary mt-20" id="btn-submit-expense">Añadir</button>
             </div>
         </div>
 
-        <!-- MODAL: Share -->
         <div class="modal-overlay" id="modal-share">
             <div class="modal">
-                <div class="modal-header">
-                    <span class="modal-title">Compartir</span>
-                    <button class="modal-close" onclick="closeModal('modal-share')">✕</button>
-                </div>
-                
-                <div class="share-box">
-                    <p class="text-muted" style="font-size:13px; margin-bottom:8px; text-align:center;">Tu código de evento</p>
-                    <div class="share-code" id="share-code" onclick="copyCode()">DESP-XXXXX</div>
-                    <div class="share-buttons">
-                        <button class="btn btn-secondary btn-small" onclick="copyCode()">📋 Copiar</button>
-                        <button class="btn btn-primary btn-small" onclick="shareWhatsApp()">💬 WhatsApp</button>
-                    </div>
-                </div>
-
-                <p class="text-muted text-center" style="font-size: 13px;">
-                    Comparte este código con los asistentes para que vean el resumen (solo lectura)
-                </p>
+                <div class="modal-header"><span class="modal-title">Compartir</span><button class="modal-close" data-close="modal-share">✕</button></div>
+                <div class="share-code" id="share-code">-</div>
+                <div style="display:flex;gap:10px"><button class="btn btn-secondary btn-small" style="flex:1" id="btn-copy-code">📋 Copiar</button><button class="btn btn-primary btn-small" style="flex:1" id="btn-share-wa">💬 WhatsApp</button></div>
             </div>
         </div>
 
-        <!-- MODAL: WhatsApp Message -->
         <div class="modal-overlay" id="modal-whatsapp">
             <div class="modal">
-                <div class="modal-header">
-                    <span class="modal-title">Mensaje WhatsApp</span>
-                    <button class="modal-close" onclick="closeModal('modal-whatsapp')">✕</button>
-                </div>
-                
-                <div class="whatsapp-preview" id="whatsapp-preview">
-                    <!-- Dynamic content -->
-                </div>
-
-                <div class="mt-20" style="display: flex; gap: 10px;">
-                    <button class="btn btn-secondary" style="flex:1" onclick="copyWhatsApp()">📋 Copiar</button>
-                    <button class="btn btn-primary" style="flex:1" onclick="sendWhatsApp()">💬 Enviar</button>
-                </div>
+                <div class="modal-header"><span class="modal-title">Mensaje</span><button class="modal-close" data-close="modal-whatsapp">✕</button></div>
+                <div class="whatsapp-preview" id="wa-preview"></div>
+                <div style="display:flex;gap:10px;margin-top:20px"><button class="btn btn-secondary" style="flex:1" id="btn-copy-wa">📋 Copiar</button><button class="btn btn-primary" style="flex:1" id="btn-send-wa">💬 Enviar</button></div>
             </div>
         </div>
 
-        <!-- MODAL: Edit Attendee -->
-        <div class="modal-overlay" id="modal-edit-attendee">
-            <div class="modal">
-                <div class="modal-header">
-                    <span class="modal-title">Editar asistente</span>
-                    <button class="modal-close" onclick="closeModal('modal-edit-attendee')">✕</button>
-                </div>
-                <form onsubmit="saveAttendee(event)">
-                    <input type="hidden" id="edit-attendee-id">
-                    <div class="form-group">
-                        <label class="form-label">Nombre o apodo *</label>
-                        <input type="text" class="form-input" id="edit-attendee-name" required>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Teléfono</label>
-                        <input type="tel" class="form-input" id="edit-attendee-phone">
-                    </div>
-                    <div class="toggle-group">
-                        <span class="toggle-label">👑 Es el novio/a (no paga)</span>
-                        <div class="toggle" id="edit-toggle-vip" onclick="this.classList.toggle('active')"></div>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Importe pagado (adelantos/señales)</label>
-                        <input type="number" class="form-input" id="edit-attendee-paid" step="0.01" placeholder="0">
-                    </div>
-                    <button type="submit" class="btn btn-primary mt-20">Guardar</button>
-                    <button type="button" class="btn btn-secondary mt-20" style="color: var(--danger);" onclick="deleteAttendee()">🗑️ Eliminar asistente</button>
-                </form>
-            </div>
-        </div>
-
-        <!-- Toast -->
         <div class="toast" id="toast"></div>
     </div>
 
-    <script>
-        // ============================================
-        // DATA STRUCTURE
-        // ============================================
-        const DEFAULT_CATEGORIES = [
-            { id: 'alojamiento', name: 'Alojamiento', icon: '🏨', color: '#4CAF50' },
-            { id: 'actividades', name: 'Actividades', icon: '🎯', color: '#2196F3' },
-            { id: 'comida', name: 'Comida', icon: '🍽️', color: '#FF9800' },
-            { id: 'cena', name: 'Cena', icon: '🥂', color: '#9C27B0' },
-            { id: 'copas', name: 'Copas', icon: '🍻', color: '#E91E63' },
-            { id: 'imprevistos', name: 'Imprevistos', icon: '💸', color: '#607D8B' }
-        ];
+<script>
+// ==================== APP STATE ====================
+const DEFAULT_CATS = [
+    {id:'alojamiento',name:'Alojamiento',icon:'🏨',color:'#4CAF50'},
+    {id:'actividades',name:'Actividades',icon:'🎯',color:'#2196F3'},
+    {id:'comida',name:'Comida',icon:'🍽️',color:'#FF9800'},
+    {id:'cena',name:'Cena',icon:'🥂',color:'#9C27B0'},
+    {id:'copas',name:'Copas',icon:'🍻',color:'#E91E63'},
+    {id:'imprevistos',name:'Imprevistos',icon:'💸',color:'#607D8B'}
+];
 
-        let currentEvent = null;
-        let currentCategoryId = null;
+let E = null; // Current Event
+let catId = null; // Current Category ID
 
-        // ============================================
-        // STORAGE
-        // ============================================
-        function saveEvent() {
-            if (currentEvent) {
-                localStorage.setItem(`event_${currentEvent.code}`, JSON.stringify(currentEvent));
-                localStorage.setItem('lastEventCode', currentEvent.code);
-            }
-        }
+// ==================== HELPERS ====================
+const $ = id => document.getElementById(id);
+const $$ = sel => document.querySelectorAll(sel);
 
-        function loadEvent(code) {
-            const data = localStorage.getItem(`event_${code}`);
-            if (data) {
-                currentEvent = JSON.parse(data);
-                return true;
-            }
-            return false;
-        }
+function toast(msg) {
+    const t = $('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2500);
+}
 
-        // ============================================
-        // GENERATE UNIQUE CODE
-        // ============================================
-        function generateCode() {
-            const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-            let code = 'DESP-';
-            for (let i = 0; i < 5; i++) {
-                code += chars.charAt(Math.floor(Math.random() * chars.length));
-            }
-            return code;
-        }
+function genCode() {
+    const c = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+    let r = 'DESP-';
+    for(let i=0;i<5;i++) r += c[Math.floor(Math.random()*c.length)];
+    return r;
+}
 
-        // ============================================
-        // SCREEN MANAGEMENT
-        // ============================================
-        function showScreen(screenId) {
-            console.log('showScreen called:', screenId, 'currentEvent:', !!currentEvent);
-            
-            // Protect against showing dashboard without event
-            if ((screenId === 'screen-dashboard' || screenId === 'screen-attendees' || 
-                 screenId === 'screen-expenses' || screenId === 'screen-summary') && !currentEvent) {
-                console.log('No currentEvent, redirecting to home');
-                if (screenId !== 'screen-home') {
-                    showScreen('screen-home');
-                }
-                return;
-            }
-            
-            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-            const targetScreen = document.getElementById(screenId);
-            if (targetScreen) {
-                targetScreen.classList.add('active');
-                console.log('Screen activated:', screenId);
-            } else {
-                console.error('Screen not found:', screenId);
-                return;
-            }
-            
-            // Update nav
-            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-            
-            // Refresh dynamic content
-            if (screenId === 'screen-dashboard' && currentEvent) updateDashboard();
-            if (screenId === 'screen-attendees' && currentEvent) renderAttendees();
-            if (screenId === 'screen-expenses' && currentEvent) renderCategories();
-            if (screenId === 'screen-summary' && currentEvent) renderSummary();
-        }
+// ==================== STORAGE ====================
+function save() {
+    if(E) {
+        localStorage.setItem('ev_'+E.code, JSON.stringify(E));
+        localStorage.setItem('lastCode', E.code);
+    }
+}
 
-        function showModal(modalId) {
-            document.getElementById(modalId).classList.add('active');
-            
-            // Prepare modal content
-            if (modalId === 'modal-add-expense') {
-                prepareExpenseModal();
-            }
-            if (modalId === 'modal-share') {
-                document.getElementById('share-code').textContent = currentEvent.code;
-            }
-        }
+function load(code) {
+    const d = localStorage.getItem('ev_'+code);
+    if(d) { E = JSON.parse(d); return true; }
+    return false;
+}
 
-        function closeModal(modalId) {
-            document.getElementById(modalId).classList.remove('active');
-        }
+// ==================== NAVIGATION ====================
+function nav(screenId) {
+    const needsEvent = ['screen-dashboard','screen-attendees','screen-expenses','screen-summary','screen-category'];
+    if(needsEvent.includes(screenId) && !E) {
+        nav('screen-home');
+        return;
+    }
+    $$('.screen').forEach(s => s.classList.remove('active'));
+    $(screenId).classList.add('active');
+    
+    // Show/hide nav
+    const showNav = needsEvent.includes(screenId) && screenId !== 'screen-category';
+    $('bottom-nav').classList.toggle('visible', showNav);
+    
+    // Update nav buttons
+    $$('.nav-item').forEach(n => n.classList.toggle('active', n.dataset.screen === screenId));
+    
+    // Render content
+    if(screenId === 'screen-dashboard') renderDash();
+    if(screenId === 'screen-attendees') renderAtt();
+    if(screenId === 'screen-expenses') renderCats();
+    if(screenId === 'screen-summary') renderSummary();
+    if(screenId === 'screen-category') renderExpenses();
+}
 
-        // Close modal on overlay click
-        document.querySelectorAll('.modal-overlay').forEach(overlay => {
-            overlay.addEventListener('click', (e) => {
-                if (e.target === overlay) {
-                    overlay.classList.remove('active');
-                }
-            });
+function openModal(id) { $(id).classList.add('active'); }
+function closeModal(id) { $(id).classList.remove('active'); }
+
+// ==================== RENDER FUNCTIONS ====================
+function renderDash() {
+    if(!E) return;
+    $('dash-city').textContent = E.city;
+    $('dash-code').textContent = E.code;
+    const d = new Date(E.date);
+    $('dash-date').textContent = d.toLocaleDateString('es-ES',{day:'numeric',month:'long',year:'numeric'});
+    
+    const stats = calcStats();
+    $('stat-total').textContent = stats.total.toFixed(0)+'€';
+    $('stat-perperson').textContent = stats.pp.toFixed(0)+'€';
+    $('stat-paid').textContent = stats.paid.toFixed(0)+'€';
+    $('stat-pending').textContent = stats.pending.toFixed(0)+'€';
+}
+
+function calcStats() {
+    const total = E.expenses.reduce((s,x) => s + x.amount, 0);
+    const paying = E.attendees.filter(a => !a.vip);
+    const pp = paying.length ? total / paying.length : 0;
+    const paid = E.attendees.reduce((s,a) => s + (a.paid||0), 0) + E.expenses.filter(x=>x.paidBy).reduce((s,x)=>s+x.amount,0);
+    return {total, pp, paid, pending: Math.max(0, total-paid)};
+}
+
+function calcPersonStats() {
+    const stats = {};
+    E.attendees.forEach(a => stats[a.id] = {owes:0, paid:a.paid||0});
+    E.expenses.forEach(exp => {
+        const parts = exp.participants || E.attendees.filter(a=>!a.vip).map(a=>a.id);
+        const payingParts = parts.filter(id => {
+            const att = E.attendees.find(a=>a.id===id);
+            return att && !att.vip;
         });
-
-        // ============================================
-        // TOAST NOTIFICATIONS
-        // ============================================
-        function showToast(message) {
-            const toast = document.getElementById('toast');
-            toast.textContent = message;
-            toast.classList.add('show');
-            setTimeout(() => toast.classList.remove('show'), 3000);
+        if(payingParts.length) {
+            const share = exp.amount / payingParts.length;
+            payingParts.forEach(id => stats[id].owes += share);
         }
+        if(exp.paidBy && stats[exp.paidBy]) stats[exp.paidBy].paid += exp.amount;
+    });
+    return stats;
+}
 
-        // ============================================
-        // EVENT CREATION
-        // ============================================
-        function selectTypeChip(chip) {
-            // Only affect chips in the type-chips container
-            document.querySelectorAll('#type-chips .chip').forEach(c => c.classList.remove('selected'));
-            chip.classList.add('selected');
-        }
-        
-        function selectIcon(chip) {
-            // Only affect chips in the icon-chips container
-            document.querySelectorAll('#icon-chips .chip').forEach(c => c.classList.remove('selected'));
-            chip.classList.add('selected');
-        }
+function renderAtt() {
+    const list = $('attendees-list');
+    if(!E.attendees.length) {
+        list.innerHTML = '<div class="empty-state"><div class="empty-state-icon">👥</div><p>Sin asistentes</p></div>';
+        return;
+    }
+    const stats = calcPersonStats();
+    list.innerHTML = E.attendees.map(a => {
+        const s = stats[a.id] || {owes:0,paid:0};
+        const bal = s.paid - s.owes;
+        let badge = a.vip ? '<span class="badge badge-vip">👑 VIP</span>' : 
+                   bal >= 0 ? '<span class="badge badge-paid">✓</span>' : 
+                   '<span class="badge badge-pending">Debe</span>';
+        return `<div class="attendee-item" data-id="${a.id}">
+            <div class="attendee-avatar ${a.vip?'vip':''}">${a.name.substring(0,2).toUpperCase()}</div>
+            <div class="attendee-info">
+                <div class="attendee-name">${a.name} ${badge}</div>
+                <div class="attendee-amount">${a.vip ? '¡No paga!' : `Debe: ${Math.max(0,-bal).toFixed(0)}€`}</div>
+            </div>
+        </div>`;
+    }).join('');
+}
 
-        async function createEvent(e) {
-            e.preventDefault();
-            console.log('createEvent called');
-            
-            try {
-                const name = document.getElementById('org-name').value.trim();
-                const phone = document.getElementById('org-phone').value.trim();
-                const city = document.getElementById('event-city').value.trim();
-                const date = document.getElementById('event-date').value;
-                const type = document.querySelector('#type-chips .chip.selected')?.dataset.type || 'soltera';
-                
-                console.log('Form data:', { name, phone, city, date, type });
-                
-                if (!name || !phone || !city || !date) {
-                    showToast('Rellena todos los campos');
-                    console.log('Validation failed - missing fields');
-                    return;
-                }
-                
-                const code = generateCode();
-                console.log('Generated code:', code);
-                
-                currentEvent = {
-                    code: code,
-                    organizer: { name, phone },
-                    city: city,
-                    date: date,
-                    type: type,
-                    attendees: [],
-                    categories: JSON.parse(JSON.stringify(DEFAULT_CATEGORIES)),
-                    expenses: [],
-                    createdAt: new Date().toISOString()
-                };
-                
-                // Add organizer as first attendee
-                currentEvent.attendees.push({
-                    id: Date.now().toString(),
-                    name: name,
-                    phone: phone,
-                    isVIP: false,
-                    paid: 0
-                });
-                
-                console.log('Event created:', currentEvent);
-                
-                saveEvent();
-                console.log('Event saved to localStorage');
-                
-                // Send webhook (don't await, fire and forget)
-                sendWebhook();
-                
-                console.log('Switching to dashboard');
-                showScreen('screen-dashboard');
-                showToast('¡Despedida creada! Código: ' + code);
-                
-            } catch (error) {
-                console.error('Error creating event:', error);
-                showToast('Error al crear. Inténtalo de nuevo.');
-            }
-        }
+function renderCats() {
+    $('categories-list').innerHTML = E.categories.map(c => {
+        const exps = E.expenses.filter(x => x.catId === c.id);
+        const total = exps.reduce((s,x) => s + x.amount, 0);
+        return `<div class="category-item" data-id="${c.id}">
+            <div class="category-left">
+                <div class="category-icon" style="background:${c.color}20;color:${c.color}">${c.icon}</div>
+                <div><div class="category-name">${c.name}</div><div class="category-count">${exps.length} gastos</div></div>
+            </div>
+            <div class="category-amount">${total.toFixed(0)}€</div>
+        </div>`;
+    }).join('');
+}
 
-        async function sendWebhook() {
-            const payload = {
-                evento_id: currentEvent.code,
-                organizador_nombre: currentEvent.organizer.name,
-                organizador_telefono: currentEvent.organizer.phone,
-                ciudad: currentEvent.city,
-                fecha_evento: currentEvent.date,
-                num_asistentes: currentEvent.attendees.length,
-                created_at: currentEvent.createdAt
-            };
-            
-            try {
-                await fetch('https://hook.eu2.make.com/toyfa30mf13arg2v7wege89p1hjgrn7v', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload),
-                    mode: 'no-cors'
-                });
-            } catch (error) {
-                console.log('Webhook sent (no-cors mode)');
-            }
-        }
+function renderExpenses() {
+    const cat = E.categories.find(c => c.id === catId);
+    if(!cat) return;
+    $('cat-title').textContent = cat.icon + ' ' + cat.name;
+    const exps = E.expenses.filter(x => x.catId === catId);
+    $('cat-total').textContent = exps.reduce((s,x)=>s+x.amount,0).toFixed(0)+'€';
+    
+    if(!exps.length) {
+        $('expenses-list').innerHTML = '<div class="empty-state"><div class="empty-state-icon">💰</div><p>Sin gastos</p></div>';
+        return;
+    }
+    $('expenses-list').innerHTML = exps.map(x => {
+        const payer = x.paidBy ? E.attendees.find(a=>a.id===x.paidBy) : null;
+        return `<div class="expense-item" data-id="${x.id}">
+            <div><div class="expense-name">${x.name}</div><div class="expense-payer">${payer?'Pagó '+payer.name:'Pendiente'}</div></div>
+            <div class="expense-amount">${x.amount.toFixed(0)}€</div>
+        </div>`;
+    }).join('');
+}
 
-        function recoverEvent(e) {
-            e.preventDefault();
-            const code = document.getElementById('recover-code').value.trim().toUpperCase();
-            
-            if (loadEvent(code)) {
-                closeModal('modal-recover');
-                showScreen('screen-dashboard');
-                showToast('¡Evento cargado!');
-            } else {
-                showToast('Código no encontrado');
-            }
-        }
+function renderSummary() {
+    const stats = calcPersonStats();
+    $('summary-persons').innerHTML = E.attendees.map(a => {
+        const s = stats[a.id] || {owes:0,paid:0};
+        const bal = s.paid - s.owes;
+        return `<div class="attendee-item">
+            <div class="attendee-avatar ${a.vip?'vip':''}">${a.name.substring(0,2).toUpperCase()}</div>
+            <div class="attendee-info">
+                <div class="attendee-name">${a.name}</div>
+                <div class="attendee-amount">${a.vip?'VIP':`Debe: ${s.owes.toFixed(0)}€ · Pagó: ${s.paid.toFixed(0)}€`}</div>
+            </div>
+            ${!a.vip ? `<div style="font-weight:700;color:${bal>=0?'var(--success)':'var(--danger)'}">${bal>=0?'+':''}${bal.toFixed(0)}€</div>` : ''}
+        </div>`;
+    }).join('');
+    
+    $('summary-categories').innerHTML = E.categories.map(c => {
+        const t = E.expenses.filter(x=>x.catId===c.id).reduce((s,x)=>s+x.amount,0);
+        return t ? `<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border)"><span>${c.icon} ${c.name}</span><strong>${t.toFixed(0)}€</strong></div>` : '';
+    }).join('');
+}
 
-        // ============================================
-        // DASHBOARD
-        // ============================================
-        function updateDashboard() {
-            if (!currentEvent) return;
-            
-            document.getElementById('dash-city').textContent = currentEvent.city;
-            document.getElementById('dash-code').textContent = currentEvent.code;
-            
-            // Format date
-            const date = new Date(currentEvent.date);
-            const options = { day: 'numeric', month: 'long', year: 'numeric' };
-            document.getElementById('dash-date').textContent = date.toLocaleDateString('es-ES', options);
-            
-            // Calculate stats
-            const stats = calculateStats();
-            document.getElementById('stat-total').textContent = stats.total.toFixed(0) + '€';
-            document.getElementById('stat-perperson').textContent = stats.perPerson.toFixed(0) + '€';
-            document.getElementById('stat-paid').textContent = stats.paid.toFixed(0) + '€';
-            document.getElementById('stat-pending').textContent = stats.pending.toFixed(0) + '€';
-        }
+// ==================== ACTIONS ====================
+function createEvent() {
+    const name = $('inp-name').value.trim();
+    const phone = $('inp-phone').value.trim();
+    const city = $('inp-city').value.trim();
+    const date = $('inp-date').value;
+    const type = document.querySelector('#type-chips .chip.selected')?.dataset.type || 'soltera';
+    
+    if(!name || !phone || !city || !date) { toast('Rellena todos los campos'); return; }
+    
+    const code = genCode();
+    E = {
+        code, city, date, type,
+        organizer: {name, phone},
+        attendees: [{id: Date.now().toString(), name, phone, vip: false, paid: 0}],
+        categories: JSON.parse(JSON.stringify(DEFAULT_CATS)),
+        expenses: [],
+        createdAt: new Date().toISOString()
+    };
+    save();
+    sendWebhook();
+    nav('screen-dashboard');
+    toast('¡Creada! Código: ' + code);
+}
 
-        function calculateStats() {
-            const total = currentEvent.expenses.reduce((sum, exp) => sum + exp.amount, 0);
-            const payingAttendees = currentEvent.attendees.filter(a => !a.isVIP);
-            const perPerson = payingAttendees.length > 0 ? total / payingAttendees.length : 0;
-            const paid = currentEvent.attendees.reduce((sum, a) => sum + (a.paid || 0), 0);
-            
-            // Also count expenses paid by specific people
-            const expensesPaid = currentEvent.expenses
-                .filter(exp => exp.paidBy)
-                .reduce((sum, exp) => sum + exp.amount, 0);
-            
-            const totalPaid = paid + expensesPaid;
-            const pending = total - totalPaid;
-            
-            return { total, perPerson, paid: totalPaid, pending: Math.max(0, pending) };
-        }
+function sendWebhook() {
+    fetch('https://hook.eu2.make.com/toyfa30mf13arg2v7wege89p1hjgrn7v', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+            evento_id: E.code,
+            organizador_nombre: E.organizer.name,
+            organizador_telefono: E.organizer.phone,
+            ciudad: E.city,
+            fecha_evento: E.date,
+            num_asistentes: E.attendees.length,
+            created_at: E.createdAt
+        }),
+        mode: 'no-cors'
+    }).catch(() => {});
+}
 
-        // ============================================
-        // ATTENDEES
-        // ============================================
-        function renderAttendees() {
-            const list = document.getElementById('attendees-list');
-            
-            if (currentEvent.attendees.length === 0) {
-                list.innerHTML = `
-                    <div class="empty-state">
-                        <div class="empty-state-icon">👥</div>
-                        <p class="empty-state-text">Aún no hay asistentes.<br>¡Añade al primero!</p>
-                    </div>
-                `;
-                return;
-            }
-            
-            const stats = calculatePersonalStats();
-            
-            list.innerHTML = currentEvent.attendees.map(attendee => {
-                const personStats = stats[attendee.id] || { owes: 0, paid: 0 };
-                const balance = personStats.paid - personStats.owes;
-                
-                let badgeHtml = '';
-                if (attendee.isVIP) {
-                    badgeHtml = '<span class="badge badge-vip">👑 VIP</span>';
-                } else if (balance >= 0) {
-                    badgeHtml = '<span class="badge badge-paid">✓ Pagado</span>';
-                } else if (personStats.paid > 0) {
-                    badgeHtml = '<span class="badge badge-partial">Parcial</span>';
-                } else {
-                    badgeHtml = '<span class="badge badge-pending">Pendiente</span>';
-                }
-                
-                const initials = attendee.name.substring(0, 2).toUpperCase();
-                
-                return `
-                    <div class="attendee-item" onclick="editAttendee('${attendee.id}')">
-                        <div class="attendee-avatar ${attendee.isVIP ? 'vip' : ''}">${initials}</div>
-                        <div class="attendee-info">
-                            <div class="attendee-name">
-                                ${attendee.name}
-                                ${badgeHtml}
-                            </div>
-                            <div class="attendee-amount">
-                                ${attendee.isVIP ? '¡No paga!' : `Debe: <strong>${Math.max(0, -balance).toFixed(0)}€</strong> · Pagado: ${personStats.paid.toFixed(0)}€`}
-                            </div>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-        }
+function addAttendee() {
+    const name = $('inp-att-name').value.trim();
+    const phone = $('inp-att-phone').value.trim();
+    const vip = $('toggle-vip').classList.contains('active');
+    if(!name) { toast('Pon un nombre'); return; }
+    if(vip) E.attendees.forEach(a => a.vip = false);
+    E.attendees.push({id: Date.now().toString(), name, phone, vip, paid: 0});
+    save();
+    closeModal('modal-attendee');
+    renderAtt();
+    toast('Añadido');
+    $('inp-att-name').value = '';
+    $('inp-att-phone').value = '';
+    $('toggle-vip').classList.remove('active');
+}
 
-        function calculatePersonalStats() {
-            const stats = {};
-            
-            // Initialize all attendees
-            currentEvent.attendees.forEach(a => {
-                stats[a.id] = { owes: 0, paid: a.paid || 0 };
-            });
-            
-            // Calculate what each person owes for each expense
-            currentEvent.expenses.forEach(expense => {
-                const participants = expense.participants || currentEvent.attendees.filter(a => !a.isVIP).map(a => a.id);
-                const payingParticipants = participants.filter(id => {
-                    const attendee = currentEvent.attendees.find(a => a.id === id);
-                    return attendee && !attendee.isVIP;
-                });
-                
-                if (payingParticipants.length > 0) {
-                    const share = expense.amount / payingParticipants.length;
-                    payingParticipants.forEach(id => {
-                        stats[id].owes += share;
-                    });
-                }
-                
-                // If someone paid this expense, add to their paid amount
-                if (expense.paidBy) {
-                    stats[expense.paidBy].paid += expense.amount;
-                }
-            });
-            
-            return stats;
-        }
+function addCategory() {
+    const name = $('inp-cat-name').value.trim();
+    const icon = document.querySelector('#icon-chips .chip.selected')?.dataset.icon || '📦';
+    if(!name) { toast('Pon un nombre'); return; }
+    const colors = ['#4CAF50','#2196F3','#FF9800','#9C27B0','#E91E63','#607D8B'];
+    E.categories.push({id: 'c'+Date.now(), name, icon, color: colors[Math.floor(Math.random()*colors.length)]});
+    save();
+    closeModal('modal-category');
+    renderCats();
+    toast('Categoría creada');
+    $('inp-cat-name').value = '';
+}
 
-        function addAttendee(e) {
-            e.preventDefault();
-            
-            const name = document.getElementById('attendee-name').value.trim();
-            const phone = document.getElementById('attendee-phone').value.trim();
-            const isVIP = document.getElementById('toggle-vip').classList.contains('active');
-            
-            // If setting as VIP, remove VIP from others
-            if (isVIP) {
-                currentEvent.attendees.forEach(a => a.isVIP = false);
-            }
-            
-            currentEvent.attendees.push({
-                id: Date.now().toString(),
-                name: name,
-                phone: phone,
-                isVIP: isVIP,
-                paid: 0
-            });
-            
-            saveEvent();
-            closeModal('modal-add-attendee');
-            renderAttendees();
-            showToast('Asistente añadido');
-            
-            // Reset form
-            document.getElementById('attendee-name').value = '';
-            document.getElementById('attendee-phone').value = '';
-            document.getElementById('toggle-vip').classList.remove('active');
-        }
+function prepareExpenseModal() {
+    const sel = $('inp-exp-payer');
+    sel.innerHTML = '<option value="">Nadie aún</option>' + E.attendees.map(a => `<option value="${a.id}">${a.name}</option>`).join('');
+    $('exp-participants').innerHTML = E.attendees.filter(a=>!a.vip).map(a => `<span class="chip selected" data-id="${a.id}">${a.name}</span>`).join('');
+}
 
-        function editAttendee(id) {
-            const attendee = currentEvent.attendees.find(a => a.id === id);
-            if (!attendee) return;
-            
-            document.getElementById('edit-attendee-id').value = id;
-            document.getElementById('edit-attendee-name').value = attendee.name;
-            document.getElementById('edit-attendee-phone').value = attendee.phone || '';
-            document.getElementById('edit-attendee-paid').value = attendee.paid || 0;
-            
-            const toggle = document.getElementById('edit-toggle-vip');
-            if (attendee.isVIP) {
-                toggle.classList.add('active');
-            } else {
-                toggle.classList.remove('active');
-            }
-            
-            showModal('modal-edit-attendee');
-        }
+function addExpense() {
+    const name = $('inp-exp-name').value.trim();
+    const amount = parseFloat($('inp-exp-amount').value) || 0;
+    const paidBy = $('inp-exp-payer').value || null;
+    const participants = Array.from($$('#exp-participants .chip.selected')).map(c => c.dataset.id);
+    if(!name || !amount) { toast('Pon nombre e importe'); return; }
+    E.expenses.push({id: 'e'+Date.now(), catId, name, amount, paidBy, participants: participants.length ? participants : null});
+    save();
+    closeModal('modal-expense');
+    renderExpenses();
+    toast('Gasto añadido');
+    $('inp-exp-name').value = '';
+    $('inp-exp-amount').value = '';
+}
 
-        function saveAttendee(e) {
-            e.preventDefault();
-            
-            const id = document.getElementById('edit-attendee-id').value;
-            const attendee = currentEvent.attendees.find(a => a.id === id);
-            if (!attendee) return;
-            
-            const isVIP = document.getElementById('edit-toggle-vip').classList.contains('active');
-            
-            // If setting as VIP, remove VIP from others
-            if (isVIP && !attendee.isVIP) {
-                currentEvent.attendees.forEach(a => a.isVIP = false);
-            }
-            
-            attendee.name = document.getElementById('edit-attendee-name').value.trim();
-            attendee.phone = document.getElementById('edit-attendee-phone').value.trim();
-            attendee.isVIP = isVIP;
-            attendee.paid = parseFloat(document.getElementById('edit-attendee-paid').value) || 0;
-            
-            saveEvent();
-            closeModal('modal-edit-attendee');
-            renderAttendees();
-            showToast('Asistente actualizado');
+function genWhatsAppMsg() {
+    const stats = calcPersonStats();
+    const totals = calcStats();
+    let m = `🎉 *DESPEDIDA EN ${E.city.toUpperCase()}*\n`;
+    m += `📅 ${new Date(E.date).toLocaleDateString('es-ES',{day:'numeric',month:'long'})}\n\n`;
+    m += `💰 *TOTAL: ${totals.total.toFixed(0)}€*\n`;
+    m += `👥 Por persona: ${totals.pp.toFixed(0)}€\n\n`;
+    m += `📊 *GASTOS:*\n`;
+    E.categories.forEach(c => {
+        const t = E.expenses.filter(x=>x.catId===c.id).reduce((s,x)=>s+x.amount,0);
+        if(t) m += `${c.icon} ${c.name}: ${t.toFixed(0)}€\n`;
+    });
+    m += `\n👤 *CADA UNO:*\n`;
+    E.attendees.forEach(a => {
+        if(a.vip) { m += `👑 ${a.name}: ¡NO PAGA!\n`; }
+        else {
+            const s = stats[a.id] || {owes:0,paid:0};
+            const bal = s.paid - s.owes;
+            m += `${bal>=0?'✅':'⏳'} ${a.name}: ${Math.max(0,-bal).toFixed(0)}€\n`;
         }
+    });
+    m += `\n💳 Bizum: ${E.organizer.phone}\n📱 Código: ${E.code}`;
+    return m;
+}
 
-        function deleteAttendee() {
-            const id = document.getElementById('edit-attendee-id').value;
-            if (!confirm('¿Eliminar este asistente?')) return;
-            
-            currentEvent.attendees = currentEvent.attendees.filter(a => a.id !== id);
-            
-            // Remove from expenses participants
-            currentEvent.expenses.forEach(exp => {
-                if (exp.participants) {
-                    exp.participants = exp.participants.filter(p => p !== id);
-                }
-                if (exp.paidBy === id) {
-                    exp.paidBy = null;
-                }
-            });
-            
-            saveEvent();
-            closeModal('modal-edit-attendee');
-            renderAttendees();
-            showToast('Asistente eliminado');
-        }
+function exportPDF() {
+    const {jsPDF} = window.jspdf;
+    const doc = new jsPDF();
+    const stats = calcPersonStats();
+    const totals = calcStats();
+    
+    doc.setFillColor(233,30,99);
+    doc.rect(0,0,210,40,'F');
+    doc.setTextColor(255,255,255);
+    doc.setFontSize(22);
+    doc.text('DESPEDIDA EN '+E.city.toUpperCase(), 105, 18, {align:'center'});
+    doc.setFontSize(12);
+    doc.text(new Date(E.date).toLocaleDateString('es-ES',{day:'numeric',month:'long',year:'numeric'}), 105, 28, {align:'center'});
+    doc.text('Código: '+E.code, 105, 36, {align:'center'});
+    
+    let y = 55;
+    doc.setTextColor(26,26,46);
+    doc.setFontSize(14);
+    doc.text('RESUMEN', 20, y);
+    y += 10;
+    doc.setFontSize(11);
+    doc.text(`Total: ${totals.total.toFixed(0)}€  |  Por persona: ${totals.pp.toFixed(0)}€  |  Pagado: ${totals.paid.toFixed(0)}€`, 20, y);
+    
+    y += 20;
+    doc.setFontSize(14);
+    doc.text('GASTOS POR CATEGORÍA', 20, y);
+    y += 8;
+    doc.setFontSize(10);
+    E.categories.forEach(c => {
+        const t = E.expenses.filter(x=>x.catId===c.id).reduce((s,x)=>s+x.amount,0);
+        if(t) { doc.text(`${c.name}: ${t.toFixed(0)}€`, 25, y); y += 6; }
+    });
+    
+    y += 10;
+    doc.setFontSize(14);
+    doc.text('POR PERSONA', 20, y);
+    y += 8;
+    doc.setFontSize(10);
+    E.attendees.forEach(a => {
+        const s = stats[a.id] || {owes:0,paid:0};
+        const bal = s.paid - s.owes;
+        const txt = a.vip ? `${a.name}: VIP (no paga)` : `${a.name}: Debe ${s.owes.toFixed(0)}€, Pagó ${s.paid.toFixed(0)}€, Saldo ${bal>=0?'+':''}${bal.toFixed(0)}€`;
+        doc.text(txt, 25, y);
+        y += 6;
+    });
+    
+    doc.setFontSize(9);
+    doc.setTextColor(107,114,128);
+    doc.text('despedidasgalicia.es · 678 288 284', 105, 285, {align:'center'});
+    
+    doc.save(`despedida_${E.city.toLowerCase().replace(/\s+/g,'_')}_${E.code}.pdf`);
+    toast('PDF descargado');
+}
 
-        // ============================================
-        // CATEGORIES & EXPENSES
-        // ============================================
-        function renderCategories() {
-            const list = document.getElementById('categories-list');
-            
-            list.innerHTML = currentEvent.categories.map(cat => {
-                const catExpenses = currentEvent.expenses.filter(e => e.categoryId === cat.id);
-                const total = catExpenses.reduce((sum, e) => sum + e.amount, 0);
-                
-                return `
-                    <div class="category-item" onclick="openCategory('${cat.id}')">
-                        <div class="category-left">
-                            <div class="category-icon" style="background: ${cat.color}20; color: ${cat.color}">${cat.icon}</div>
-                            <div>
-                                <div class="category-name">${cat.name}</div>
-                                <div class="category-count">${catExpenses.length} gastos</div>
-                            </div>
-                        </div>
-                        <div class="category-amount">${total.toFixed(0)}€</div>
-                    </div>
-                `;
-            }).join('');
-        }
-
-        function addCategory(e) {
-            e.preventDefault();
-            
-            const name = document.getElementById('category-name').value.trim();
-            const icon = document.querySelector('#icon-chips .chip.selected')?.dataset.icon || '📦';
-            
-            const colors = ['#4CAF50', '#2196F3', '#FF9800', '#9C27B0', '#E91E63', '#607D8B', '#795548', '#00BCD4'];
-            const color = colors[Math.floor(Math.random() * colors.length)];
-            
-            currentEvent.categories.push({
-                id: 'cat_' + Date.now(),
-                name: name,
-                icon: icon,
-                color: color
-            });
-            
-            saveEvent();
-            closeModal('modal-add-category');
-            renderCategories();
-            showToast('Categoría creada');
-            
-            document.getElementById('category-name').value = '';
-        }
-
-        function openCategory(catId) {
-            currentCategoryId = catId;
-            const category = currentEvent.categories.find(c => c.id === catId);
-            
-            document.getElementById('category-title').textContent = category.icon + ' ' + category.name;
-            
+// ==================== EVENT LISTENERS ====================
+document.addEventListener('DOMContentLoaded', function() {
+    // Navigation buttons
+    $('btn-create').onclick = () => nav('screen-create');
+    $('btn-back-home').onclick = () => nav('screen-home');
+    $('btn-recover').onclick = () => openModal('modal-recover');
+    $('btn-back-expenses').onclick = () => nav('screen-expenses');
+    
+    // Form submissions
+    $('btn-submit-create').onclick = createEvent;
+    $('btn-submit-recover').onclick = () => {
+        const code = $('inp-recover').value.trim().toUpperCase();
+        if(load(code)) { closeModal('modal-recover'); nav('screen-dashboard'); toast('Cargado'); }
+        else toast('Código no encontrado');
+    };
+    $('btn-submit-attendee').onclick = addAttendee;
+    $('btn-submit-category').onclick = addCategory;
+    $('btn-submit-expense').onclick = addExpense;
+    
+    // Modal triggers
+    $('btn-add-attendee').onclick = () => openModal('modal-attendee');
+    $('btn-add-category').onclick = () => openModal('modal-category');
+    $('btn-add-expense').onclick = () => { prepareExpenseModal(); openModal('modal-expense'); };
+    $('btn-share').onclick = () => { $('share-code').textContent = E.code; openModal('modal-share'); };
+    $('btn-whatsapp').onclick = () => { $('wa-preview').textContent = genWhatsAppMsg(); openModal('modal-whatsapp'); };
+    $('btn-whatsapp2').onclick = () => { $('wa-preview').textContent = genWhatsAppMsg(); openModal('modal-whatsapp'); };
+    
+    // Share actions
+    $('btn-copy-code').onclick = () => { navigator.clipboard.writeText(E.code); toast('Copiado'); };
+    $('btn-share-wa').onclick = () => window.open('https://wa.me/?text='+encodeURIComponent('🎉 Despedida en '+E.city+'\nCódigo: '+E.code));
+    $('btn-copy-wa').onclick = () => { navigator.clipboard.writeText($('wa-preview').textContent); toast('Copiado'); };
+    $('btn-send-wa').onclick = () => window.open('https://wa.me/?text='+encodeURIComponent($('wa-preview').textContent));
+    $('btn-pdf').onclick = exportPDF;
+    $('dash-code').onclick = () => { navigator.clipboard.writeText(E.code); toast('Código copiado'); };
+    
+    // Close modals
+    $$('.modal-close').forEach(btn => btn.onclick = () => closeModal(btn.dataset.close));
+    $$('.modal-overlay').forEach(m => m.onclick = e => { if(e.target === m) closeModal(m.id); });
+    
+    // Toggle
+    $('toggle-vip').onclick = function() { this.classList.toggle('active'); };
+    
+    // Type chips
+    $$('#type-chips .chip').forEach(c => c.onclick = function() {
+        $$('#type-chips .chip').forEach(x => x.classList.remove('selected'));
+        this.classList.add('selected');
+    });
+    
+    // Icon chips
+    $$('#icon-chips .chip').forEach(c => c.onclick = function() {
+        $$('#icon-chips .chip').forEach(x => x.classList.remove('selected'));
+        this.classList.add('selected');
+    });
+    
+    // Participant chips (toggle)
+    document.addEventListener('click', e => {
+        if(e.target.matches('#exp-participants .chip')) e.target.classList.toggle('selected');
+    });
+    
+    // Category click
+    document.addEventListener('click', e => {
+        const cat = e.target.closest('.category-item');
+        if(cat) { catId = cat.dataset.id; nav('screen-category'); }
+    });
+    
+    // Expense click (delete)
+    document.addEventListener('click', e => {
+        const exp = e.target.closest('.expense-item');
+        if(exp && confirm('¿Eliminar gasto?')) {
+            E.expenses = E.expenses.filter(x => x.id !== exp.dataset.id);
+            save();
             renderExpenses();
-            showScreen('screen-category');
+            toast('Eliminado');
         }
-
-        function renderExpenses() {
-            const list = document.getElementById('expenses-list');
-            const catExpenses = currentEvent.expenses.filter(e => e.categoryId === currentCategoryId);
-            
-            const total = catExpenses.reduce((sum, e) => sum + e.amount, 0);
-            document.getElementById('category-total').textContent = total.toFixed(0) + '€';
-            
-            if (catExpenses.length === 0) {
-                list.innerHTML = `
-                    <div class="empty-state">
-                        <div class="empty-state-icon">💰</div>
-                        <p class="empty-state-text">Sin gastos aún.<br>¡Añade el primero!</p>
-                    </div>
-                `;
-                return;
-            }
-            
-            list.innerHTML = catExpenses.map(exp => {
-                const payer = exp.paidBy ? currentEvent.attendees.find(a => a.id === exp.paidBy) : null;
-                
-                return `
-                    <div class="expense-item" onclick="deleteExpense('${exp.id}')">
-                        <div class="expense-info">
-                            <div class="expense-name">${exp.name}</div>
-                            <div class="expense-payer">
-                                ${payer ? `Pagado por ${payer.name}` : 'Pendiente de pago'}
-                                ${exp.participants ? ` · ${exp.participants.length} personas` : ''}
-                            </div>
-                        </div>
-                        <div class="expense-amount">${exp.amount.toFixed(0)}€</div>
-                    </div>
-                `;
-            }).join('');
-        }
-
-        function prepareExpenseModal() {
-            // Populate payer dropdown
-            const payerSelect = document.getElementById('expense-payer');
-            payerSelect.innerHTML = '<option value="">Bote común / Nadie aún</option>' +
-                currentEvent.attendees.map(a => `<option value="${a.id}">${a.name}</option>`).join('');
-            
-            // Populate participants chips
-            const participantsDiv = document.getElementById('expense-participants');
-            participantsDiv.innerHTML = currentEvent.attendees
-                .filter(a => !a.isVIP)
-                .map(a => `<span class="chip selected" data-id="${a.id}" onclick="this.classList.toggle('selected')">${a.name}</span>`)
-                .join('');
-        }
-
-        function addExpense(e) {
-            e.preventDefault();
-            
-            const name = document.getElementById('expense-name').value.trim();
-            const amount = parseFloat(document.getElementById('expense-amount').value);
-            const paidBy = document.getElementById('expense-payer').value || null;
-            
-            const participants = Array.from(document.querySelectorAll('#expense-participants .chip.selected'))
-                .map(chip => chip.dataset.id);
-            
-            currentEvent.expenses.push({
-                id: 'exp_' + Date.now(),
-                categoryId: currentCategoryId,
-                name: name,
-                amount: amount,
-                paidBy: paidBy,
-                participants: participants.length > 0 ? participants : null
-            });
-            
-            saveEvent();
-            closeModal('modal-add-expense');
-            renderExpenses();
-            showToast('Gasto añadido');
-            
-            // Reset form
-            document.getElementById('expense-name').value = '';
-            document.getElementById('expense-amount').value = '';
-        }
-
-        function deleteExpense(expId) {
-            if (!confirm('¿Eliminar este gasto?')) return;
-            
-            currentEvent.expenses = currentEvent.expenses.filter(e => e.id !== expId);
-            saveEvent();
-            renderExpenses();
-            showToast('Gasto eliminado');
-        }
-
-        // ============================================
-        // SUMMARY
-        // ============================================
-        function renderSummary() {
-            const breakdownDiv = document.getElementById('summary-breakdown');
-            const categoriesTable = document.getElementById('summary-categories');
-            
-            const stats = calculatePersonalStats();
-            const totalStats = calculateStats();
-            
-            // Person breakdown
-            breakdownDiv.innerHTML = currentEvent.attendees.map(attendee => {
-                const personStats = stats[attendee.id] || { owes: 0, paid: 0 };
-                const balance = personStats.paid - personStats.owes;
-                
-                return `
-                    <div class="attendee-item">
-                        <div class="attendee-avatar ${attendee.isVIP ? 'vip' : ''}">${attendee.name.substring(0, 2).toUpperCase()}</div>
-                        <div class="attendee-info">
-                            <div class="attendee-name">${attendee.name} ${attendee.isVIP ? '👑' : ''}</div>
-                            <div class="attendee-amount">
-                                ${attendee.isVIP ? '¡No paga!' : `Debe: ${personStats.owes.toFixed(0)}€ · Pagado: ${personStats.paid.toFixed(0)}€`}
-                            </div>
-                        </div>
-                        ${!attendee.isVIP ? `<div style="font-weight:700; color: ${balance >= 0 ? 'var(--success)' : 'var(--danger)'}">${balance >= 0 ? '+' : ''}${balance.toFixed(0)}€</div>` : ''}
-                    </div>
-                `;
-            }).join('');
-            
-            // Category breakdown
-            let categoryRows = currentEvent.categories.map(cat => {
-                const catTotal = currentEvent.expenses
-                    .filter(e => e.categoryId === cat.id)
-                    .reduce((sum, e) => sum + e.amount, 0);
-                
-                if (catTotal === 0) return '';
-                
-                return `
-                    <tr>
-                        <td>${cat.icon} ${cat.name}</td>
-                        <td class="amount">${catTotal.toFixed(0)}€</td>
-                    </tr>
-                `;
-            }).join('');
-            
-            categoryRows += `
-                <tr class="total-row">
-                    <td>TOTAL</td>
-                    <td class="amount">${totalStats.total.toFixed(0)}€</td>
-                </tr>
-            `;
-            
-            categoriesTable.innerHTML = `
-                <thead>
-                    <tr>
-                        <th>Categoría</th>
-                        <th style="text-align:right">Importe</th>
-                    </tr>
-                </thead>
-                <tbody>${categoryRows}</tbody>
-            `;
-        }
-
-        // ============================================
-        // SHARING
-        // ============================================
-        function copyCode() {
-            navigator.clipboard.writeText(currentEvent.code);
-            showToast('Código copiado');
-        }
-
-        function shareWhatsApp() {
-            const text = `🎉 *Despedida en ${currentEvent.city}*\n\nÚnete para ver los gastos:\n\n📱 Código: *${currentEvent.code}*\n\n👉 [Link a la app]`;
-            window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
-        }
-
-        function generateWhatsApp() {
-            const stats = calculatePersonalStats();
-            const totalStats = calculateStats();
-            
-            let message = `🎉 *DESPEDIDA EN ${currentEvent.city.toUpperCase()}*\n`;
-            message += `📅 ${new Date(currentEvent.date).toLocaleDateString('es-ES', { day: 'numeric', month: 'long' })}\n\n`;
-            
-            message += `💰 *TOTAL: ${totalStats.total.toFixed(0)}€*\n`;
-            message += `👥 Por persona: ${totalStats.perPerson.toFixed(0)}€\n\n`;
-            
-            message += `📊 *DESGLOSE:*\n`;
-            currentEvent.categories.forEach(cat => {
-                const catTotal = currentEvent.expenses
-                    .filter(e => e.categoryId === cat.id)
-                    .reduce((sum, e) => sum + e.amount, 0);
-                if (catTotal > 0) {
-                    message += `${cat.icon} ${cat.name}: ${catTotal.toFixed(0)}€\n`;
-                }
-            });
-            
-            message += `\n👤 *CADA UNO DEBE:*\n`;
-            currentEvent.attendees.forEach(a => {
-                if (a.isVIP) {
-                    message += `👑 ${a.name}: ¡NO PAGA!\n`;
-                } else {
-                    const personStats = stats[a.id] || { owes: 0, paid: 0 };
-                    const balance = personStats.paid - personStats.owes;
-                    const status = balance >= 0 ? '✅' : '⏳';
-                    message += `${status} ${a.name}: ${Math.max(0, -balance).toFixed(0)}€\n`;
-                }
-            });
-            
-            message += `\n💳 *Bizum:* ${currentEvent.organizer.phone}\n`;
-            message += `📱 Código evento: ${currentEvent.code}`;
-            
-            document.getElementById('whatsapp-preview').textContent = message;
-            showModal('modal-whatsapp');
-        }
-
-        function copyWhatsApp() {
-            const text = document.getElementById('whatsapp-preview').textContent;
-            navigator.clipboard.writeText(text);
-            showToast('Mensaje copiado');
-        }
-
-        function sendWhatsApp() {
-            const text = document.getElementById('whatsapp-preview').textContent;
-            window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
-        }
-
-        // ============================================
-        // PDF EXPORT
-        // ============================================
-        function exportPDF() {
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
-            
-            const stats = calculatePersonalStats();
-            const totalStats = calculateStats();
-            
-            // Colors
-            const pink = [233, 30, 99];
-            const dark = [26, 26, 46];
-            const gray = [107, 114, 128];
-            const green = [76, 175, 80];
-            const red = [255, 87, 34];
-            
-            let y = 20;
-            
-            // Header
-            doc.setFillColor(...pink);
-            doc.rect(0, 0, 210, 45, 'F');
-            
-            doc.setTextColor(255, 255, 255);
-            doc.setFontSize(24);
-            doc.setFont('helvetica', 'bold');
-            doc.text('DESPEDIDA EN ' + currentEvent.city.toUpperCase(), 105, 20, { align: 'center' });
-            
-            doc.setFontSize(12);
-            doc.setFont('helvetica', 'normal');
-            const dateStr = new Date(currentEvent.date).toLocaleDateString('es-ES', { 
-                day: 'numeric', month: 'long', year: 'numeric' 
-            });
-            doc.text(dateStr, 105, 32, { align: 'center' });
-            doc.text('Código: ' + currentEvent.code, 105, 40, { align: 'center' });
-            
-            y = 60;
-            
-            // Summary Box
-            doc.setFillColor(250, 250, 250);
-            doc.roundedRect(15, y - 5, 180, 35, 3, 3, 'F');
-            
-            doc.setTextColor(...dark);
-            doc.setFontSize(14);
-            doc.setFont('helvetica', 'bold');
-            doc.text('RESUMEN', 20, y + 5);
-            
-            doc.setFontSize(11);
-            doc.setFont('helvetica', 'normal');
-            doc.text('Total gastos:', 20, y + 18);
-            doc.text('Por persona:', 80, y + 18);
-            doc.text('Pagado:', 140, y + 18);
-            
-            doc.setFont('helvetica', 'bold');
-            doc.setTextColor(...pink);
-            doc.text(totalStats.total.toFixed(0) + '€', 20, y + 26);
-            doc.text(totalStats.perPerson.toFixed(0) + '€', 80, y + 26);
-            doc.setTextColor(...green);
-            doc.text(totalStats.paid.toFixed(0) + '€', 140, y + 26);
-            
-            y += 45;
-            
-            // Categories Section
-            doc.setTextColor(...dark);
-            doc.setFontSize(14);
-            doc.setFont('helvetica', 'bold');
-            doc.text('DESGLOSE POR CATEGORÍA', 20, y);
-            y += 10;
-            
-            doc.setFontSize(10);
-            currentEvent.categories.forEach(cat => {
-                const catTotal = currentEvent.expenses
-                    .filter(e => e.categoryId === cat.id)
-                    .reduce((sum, e) => sum + e.amount, 0);
-                
-                if (catTotal > 0) {
-                    doc.setFont('helvetica', 'normal');
-                    doc.setTextColor(...gray);
-                    doc.text(cat.name, 25, y);
-                    doc.setFont('helvetica', 'bold');
-                    doc.setTextColor(...dark);
-                    doc.text(catTotal.toFixed(0) + '€', 180, y, { align: 'right' });
-                    
-                    // List expenses in category
-                    const catExpenses = currentEvent.expenses.filter(e => e.categoryId === cat.id);
-                    catExpenses.forEach(exp => {
-                        y += 5;
-                        doc.setFont('helvetica', 'normal');
-                        doc.setTextColor(...gray);
-                        doc.setFontSize(9);
-                        doc.text('  · ' + exp.name + ': ' + exp.amount.toFixed(0) + '€', 30, y);
-                    });
-                    doc.setFontSize(10);
-                    
-                    y += 8;
-                }
-            });
-            
-            y += 10;
-            
-            // Attendees Section
-            if (y > 200) {
-                doc.addPage();
-                y = 20;
-            }
-            
-            doc.setTextColor(...dark);
-            doc.setFontSize(14);
-            doc.setFont('helvetica', 'bold');
-            doc.text('DESGLOSE POR PERSONA', 20, y);
-            y += 10;
-            
-            // Table header
-            doc.setFillColor(250, 250, 250);
-            doc.rect(15, y - 4, 180, 8, 'F');
-            doc.setFontSize(9);
-            doc.setTextColor(...gray);
-            doc.text('NOMBRE', 20, y + 1);
-            doc.text('DEBE', 100, y + 1);
-            doc.text('PAGADO', 130, y + 1);
-            doc.text('SALDO', 165, y + 1);
-            y += 10;
-            
-            doc.setFontSize(10);
-            currentEvent.attendees.forEach(attendee => {
-                const personStats = stats[attendee.id] || { owes: 0, paid: 0 };
-                const balance = personStats.paid - personStats.owes;
-                
-                doc.setFont('helvetica', 'normal');
-                doc.setTextColor(...dark);
-                doc.text(attendee.name + (attendee.isVIP ? ' 👑' : ''), 20, y);
-                
-                if (attendee.isVIP) {
-                    doc.setTextColor(...gray);
-                    doc.text('VIP', 100, y);
-                    doc.text('-', 130, y);
-                    doc.text('-', 165, y);
-                } else {
-                    doc.text(personStats.owes.toFixed(0) + '€', 100, y);
-                    doc.text(personStats.paid.toFixed(0) + '€', 130, y);
-                    
-                    if (balance >= 0) {
-                        doc.setTextColor(...green);
-                        doc.text('+' + balance.toFixed(0) + '€', 165, y);
-                    } else {
-                        doc.setTextColor(...red);
-                        doc.text(balance.toFixed(0) + '€', 165, y);
-                    }
-                }
-                
-                y += 7;
-                
-                if (y > 270) {
-                    doc.addPage();
-                    y = 20;
-                }
-            });
-            
-            // Footer
-            y = 280;
-            doc.setFontSize(9);
-            doc.setTextColor(...gray);
-            doc.text('despedidasgalicia.es · 678 288 284', 105, y, { align: 'center' });
-            
-            // Save
-            const filename = 'despedida_' + currentEvent.city.toLowerCase().replace(/\s+/g, '_') + '_' + currentEvent.code + '.pdf';
-            doc.save(filename);
-            
-            showToast('PDF descargado');
-        }
-
-        // ============================================
-        // INIT
-        // ============================================
-        function init() {
-            console.log('init() started');
-            try {
-                // Check for saved event
-                const lastCode = localStorage.getItem('lastEventCode');
-                console.log('lastEventCode from localStorage:', lastCode);
-                
-                if (lastCode) {
-                    const loaded = loadEvent(lastCode);
-                    console.log('loadEvent result:', loaded, 'currentEvent:', !!currentEvent);
-                    if (loaded && currentEvent) {
-                        showScreen('screen-dashboard');
-                        return;
-                    }
-                }
-                
-                // Default: show home
-                console.log('Showing home screen');
-                showScreen('screen-home');
-                
-                // Set min date for event
-                const dateInput = document.getElementById('event-date');
-                if (dateInput) {
-                    dateInput.min = new Date().toISOString().split('T')[0];
-                }
-            } catch (error) {
-                console.error('Init error:', error);
-                // Clear corrupted data and show home
-                localStorage.removeItem('lastEventCode');
-                currentEvent = null;
-                showScreen('screen-home');
-            }
-            console.log('init() completed');
-        }
-
-        // Register Service Worker (only in production with HTTPS)
-        if ('serviceWorker' in navigator && location.protocol === 'https:' && !location.hostname.includes('claude')) {
-            navigator.serviceWorker.register('sw.js')
-                .then(() => console.log('SW registered'))
-                .catch(err => console.log('SW registration failed:', err));
-        }
-
-        init();
-    </script>
+    });
+    
+    // Nav buttons
+    $$('.nav-item').forEach(n => n.onclick = () => nav(n.dataset.screen));
+    
+    // Init
+    $('inp-date').min = new Date().toISOString().split('T')[0];
+    const lastCode = localStorage.getItem('lastCode');
+    if(lastCode && load(lastCode)) nav('screen-dashboard');
+    else nav('screen-home');
+});
+</script>
 </body>
 </html>
