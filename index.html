@@ -144,10 +144,23 @@
                 <h1>🎉 ORGANIZA TU DESPEDIDA</h1>
                 <p>Controla gastos, pagos y divide cuentas sin dramas. El novio/a nunca paga.</p>
             </div>
+            
+            <div class="card mb-20">
+                <div class="card-title">💡 ¿Para qué sirve esto?</div>
+                <div style="font-size:14px;line-height:1.6;color:var(--text-muted)">
+                    <p style="margin-bottom:10px">✅ <strong>Conserva amistades</strong> — Que el dinero no estropee la fiesta</p>
+                    <p style="margin-bottom:10px">✅ <strong>Adiós al caos</strong> — Nada de excels, capturas y "¿quién pagó qué?"</p>
+                    <p style="margin-bottom:10px">✅ <strong>El prota no paga</strong> — Se divide automáticamente entre los demás</p>
+                    <p style="margin-bottom:10px">✅ <strong>Cada uno lo suyo</strong> — Si alguien no va a una actividad, no paga</p>
+                    <p>✅ <strong>Comparte fácil</strong> — PDF y WhatsApp con un click</p>
+                </div>
+            </div>
+            
             <button class="btn btn-primary mb-20" id="btn-create">🎉 Crear nueva despedida</button>
             <div class="divider">o</div>
             <button class="btn btn-secondary" id="btn-recover">🔑 Tengo un código</button>
             <p class="text-center text-muted mt-20" style="font-size:12px">📞 678 288 284 · despedidasgalicia.es</p>
+            <p class="text-center mt-20" style="font-size:11px;color:var(--text-muted);font-style:italic">"Boas badaladas e mellor resaca" 🍻</p>
         </div>
 
         <!-- CREATE -->
@@ -589,10 +602,32 @@ function renderSummary() {
         </div>`;
     }).join('');
     
-    $('summary-categories').innerHTML = E.categories.map(c => {
-        const t = E.expenses.filter(x=>x.catId===c.id).reduce((s,x)=>s+x.amount,0);
-        return t ? `<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border)"><span>${c.icon} ${c.name}</span><strong>${t.toFixed(0)}€</strong></div>` : '';
-    }).join('');
+    // Desglose detallado por categoría con gastos individuales
+    let catHtml = '';
+    E.categories.forEach(c => {
+        const exps = E.expenses.filter(x => x.catId === c.id);
+        const total = exps.reduce((s,x) => s + x.amount, 0);
+        if(total > 0) {
+            catHtml += `<div style="margin-bottom:16px">
+                <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:2px solid var(--primary-light)">
+                    <span style="font-weight:700">${c.icon} ${c.name}</span>
+                    <strong style="color:var(--primary)">${total.toFixed(0)}€</strong>
+                </div>`;
+            exps.forEach(exp => {
+                const payer = exp.paidBy ? E.attendees.find(a=>a.id===exp.paidBy) : null;
+                catHtml += `<div style="display:flex;justify-content:space-between;padding:6px 0 6px 12px;font-size:13px;color:var(--text-muted)">
+                    <span>• ${exp.name}${payer ? ' <span style="color:var(--success)">('+payer.name+')</span>' : ''}</span>
+                    <span>${exp.amount.toFixed(0)}€</span>
+                </div>`;
+            });
+            catHtml += `</div>`;
+        }
+    });
+    const totalGeneral = E.expenses.reduce((s,x) => s + x.amount, 0);
+    catHtml += `<div style="display:flex;justify-content:space-between;padding:12px 0;border-top:2px solid var(--secondary);margin-top:8px;font-size:18px">
+        <strong>TOTAL</strong><strong style="color:var(--primary)">${totalGeneral.toFixed(0)}€</strong>
+    </div>`;
+    $('summary-categories').innerHTML = catHtml;
 }
 
 // ==================== ATTENDEE ACTIONS ====================
@@ -887,15 +922,33 @@ function addCategory() {
 function genWhatsAppMsg() {
     const stats = calcPersonStats();
     const totals = calcStats();
+    const frasesGallegas = [
+        "Non sexas rato... bota o cartino! 🐭",
+        "Bota a pasta e logo bebe auga 💸",
+        "Quen non pon, non come 🍽️",
+        "A boa festa pagase entre todos 🎉",
+        "Menos ratonar e mais Bizum 📱"
+    ];
+    const frase = frasesGallegas[Math.floor(Math.random()*frasesGallegas.length)];
+    
     let m = `🎉 *DESPEDIDA EN ${E.city.toUpperCase()}*\n`;
     m += `📅 ${new Date(E.date).toLocaleDateString('es-ES',{day:'numeric',month:'long'})}\n\n`;
     m += `💰 *TOTAL: ${totals.total.toFixed(0)}€*\n`;
     m += `👥 Por persona: ${totals.pp.toFixed(0)}€\n\n`;
-    m += `📊 *GASTOS:*\n`;
+    
+    m += `📊 *DESGLOSE DE GASTOS:*\n`;
     E.categories.forEach(c => {
-        const t = E.expenses.filter(x=>x.catId===c.id).reduce((s,x)=>s+x.amount,0);
-        if(t) m += `${c.icon} ${c.name}: ${t.toFixed(0)}€\n`;
+        const exps = E.expenses.filter(x=>x.catId===c.id);
+        const catTotal = exps.reduce((s,x)=>s+x.amount,0);
+        if(catTotal > 0) {
+            m += `\n${c.icon} *${c.name}:* ${catTotal.toFixed(0)}€\n`;
+            exps.forEach(exp => {
+                const payer = exp.paidBy ? E.attendees.find(a=>a.id===exp.paidBy) : null;
+                m += `   • ${exp.name}: ${exp.amount.toFixed(0)}€${payer?' ('+payer.name+')':''}\n`;
+            });
+        }
     });
+    
     m += `\n👤 *CADA UNO DEBE:*\n`;
     E.attendees.forEach(a => {
         const role = a.role || (a.vip ? 'protagonista' : 'invitado');
@@ -910,7 +963,9 @@ function genWhatsAppMsg() {
             m += `${bal>=0?'✅':'⏳'} ${roleIcon}${a.name}: ${Math.max(0,-bal).toFixed(0)}€\n`;
         }
     });
-    m += `\n💳 Bizum: ${E.organizer.phone}\n📱 Código: ${E.code}`;
+    m += `\n💳 *Bizum:* ${E.organizer.phone}\n📱 *Código:* ${E.code}\n\n`;
+    m += `_${frase}_\n`;
+    m += `_despedidasgalicia.es_`;
     return m;
 }
 
@@ -920,6 +975,16 @@ function exportPDF() {
     const stats = calcPersonStats();
     const totals = calcStats();
     
+    const frasesGallegas = [
+        "Non sexas rato... bota o cartiño!",
+        "Bota a pasta e logo bebe auga",
+        "Quen non pon, non pon... pero tampouco come",
+        "A boa festa pagase entre todos",
+        "Menos ratoñar e mais Bizum"
+    ];
+    const frase = frasesGallegas[Math.floor(Math.random()*frasesGallegas.length)];
+    
+    // Header
     doc.setFillColor(233,30,99);
     doc.rect(0,0,210,40,'F');
     doc.setTextColor(255,255,255);
@@ -927,54 +992,91 @@ function exportPDF() {
     doc.text('DESPEDIDA EN '+E.city.toUpperCase(), 105, 18, {align:'center'});
     doc.setFontSize(12);
     doc.text(new Date(E.date).toLocaleDateString('es-ES',{day:'numeric',month:'long',year:'numeric'}), 105, 28, {align:'center'});
-    doc.text('Código: '+E.code, 105, 36, {align:'center'});
+    doc.text('Codigo: '+E.code, 105, 36, {align:'center'});
     
     let y = 55;
     doc.setTextColor(26,26,46);
     doc.setFontSize(14);
-    doc.text('RESUMEN', 20, y);
+    doc.text('RESUMEN GENERAL', 20, y);
     y += 10;
     doc.setFontSize(11);
-    doc.text(`Total: ${totals.total.toFixed(0)}€  |  Por persona: ${totals.pp.toFixed(0)}€  |  Pagado: ${totals.paid.toFixed(0)}€`, 20, y);
+    doc.text('Total: '+totals.total.toFixed(0)+'E  |  Por persona: '+totals.pp.toFixed(0)+'E  |  Pendiente: '+totals.pending.toFixed(0)+'E', 20, y);
     
-    y += 20;
+    y += 18;
     doc.setFontSize(14);
-    doc.text('GASTOS POR CATEGORÍA', 20, y);
-    y += 8;
-    doc.setFontSize(10);
+    doc.text('DESGLOSE DE GASTOS', 20, y);
+    y += 10;
+    
+    // Desglose por categoria con gastos individuales
     E.categories.forEach(c => {
-        const t = E.expenses.filter(x=>x.catId===c.id).reduce((s,x)=>s+x.amount,0);
-        if(t) { doc.text(`${c.name}: ${t.toFixed(0)}€`, 25, y); y += 6; }
+        const exps = E.expenses.filter(x => x.catId === c.id);
+        const catTotal = exps.reduce((s,x) => s + x.amount, 0);
+        if(catTotal > 0) {
+            if(y > 250) { doc.addPage(); y = 20; }
+            doc.setFontSize(11);
+            doc.setTextColor(233,30,99);
+            doc.text(c.icon+' '+c.name+': '+catTotal.toFixed(0)+'E', 20, y);
+            y += 7;
+            doc.setTextColor(107,114,128);
+            doc.setFontSize(9);
+            exps.forEach(exp => {
+                const payer = exp.paidBy ? E.attendees.find(a=>a.id===exp.paidBy) : null;
+                const payerTxt = payer ? ' (pago '+payer.name+')' : '';
+                doc.text('   - '+exp.name+': '+exp.amount.toFixed(0)+'E'+payerTxt, 25, y);
+                y += 5;
+                if(y > 270) { doc.addPage(); y = 20; }
+            });
+            y += 3;
+        }
     });
     
     y += 10;
+    if(y > 230) { doc.addPage(); y = 20; }
+    
     doc.setFontSize(14);
-    doc.text('POR PERSONA', 20, y);
-    y += 8;
+    doc.setTextColor(26,26,46);
+    doc.text('LO QUE DEBE CADA UNO', 20, y);
+    y += 10;
     doc.setFontSize(10);
+    
     E.attendees.forEach(a => {
         const s = stats[a.id] || {owes:0,paid:0};
         const bal = s.paid - s.owes;
         const role = a.role || (a.vip ? 'protagonista' : 'invitado');
         const isVip = role === 'protagonista' || a.vip;
         
-        let roleLabel = '';
-        if(isVip) roleLabel = ' [NOVIO/A - NO PAGA]';
-        else if(role === 'organizador') roleLabel = ' [Organizador]';
-        
-        const txt = isVip 
-            ? `${a.name}${roleLabel}` 
-            : `${a.name}${roleLabel}: Debe ${s.owes.toFixed(0)}€, Pagó ${s.paid.toFixed(0)}€, Saldo ${bal>=0?'+':''}${bal.toFixed(0)}€`;
-        doc.text(txt, 25, y);
-        y += 6;
+        if(isVip) {
+            doc.setTextColor(255,193,7);
+            doc.text('CORONA '+a.name+' - NO PAGA (Protagonista)', 25, y);
+        } else {
+            const pendiente = Math.max(0, -bal);
+            if(bal >= 0) {
+                doc.setTextColor(76,175,80);
+                doc.text('OK '+a.name+': Todo pagado (+'+bal.toFixed(0)+'E a favor)', 25, y);
+            } else {
+                doc.setTextColor(255,87,34);
+                doc.text('PEND '+a.name+': Debe '+pendiente.toFixed(0)+'E (pago '+s.paid.toFixed(0)+'E de '+s.owes.toFixed(0)+'E)', 25, y);
+            }
+        }
+        y += 7;
         if(y > 270) { doc.addPage(); y = 20; }
     });
     
+    // Frase gallega
+    y += 12;
+    if(y > 260) { doc.addPage(); y = 20; }
+    doc.setFillColor(250,250,250);
+    doc.roundedRect(15, y-5, 180, 15, 3, 3, 'F');
+    doc.setFontSize(10);
+    doc.setTextColor(26,26,46);
+    doc.text('"'+frase+'" - despedidasgalicia.es', 105, y+4, {align:'center'});
+    
+    // Footer
     doc.setFontSize(9);
     doc.setTextColor(107,114,128);
-    doc.text('despedidasgalicia.es · 678 288 284', 105, 285, {align:'center'});
+    doc.text('despedidasgalicia.es - 678 288 284 - Que viva a festa!', 105, 285, {align:'center'});
     
-    doc.save(`despedida_${E.city.toLowerCase().replace(/\s+/g,'_')}_${E.code}.pdf`);
+    doc.save('despedida_'+E.city.toLowerCase().replace(/\s+/g,'_')+'_'+E.code+'.pdf');
     toast('PDF descargado');
 }
 
