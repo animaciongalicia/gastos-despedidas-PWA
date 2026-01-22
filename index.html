@@ -928,9 +928,9 @@
 
                 <div class="form-group">
                     <label class="form-label">¿Despedida de...?</label>
-                    <div class="chips">
-                        <span class="chip selected" data-type="soltera" onclick="selectType(this)">👰 Soltera</span>
-                        <span class="chip" data-type="soltero" onclick="selectType(this)">🤵 Soltero</span>
+                    <div class="chips" id="type-chips">
+                        <span class="chip selected" data-type="soltera" onclick="selectTypeChip(this)">👰 Soltera</span>
+                        <span class="chip" data-type="soltero" onclick="selectTypeChip(this)">🤵 Soltero</span>
                     </div>
                 </div>
 
@@ -1376,15 +1376,27 @@
         // SCREEN MANAGEMENT
         // ============================================
         function showScreen(screenId) {
+            console.log('showScreen called:', screenId, 'currentEvent:', !!currentEvent);
+            
             // Protect against showing dashboard without event
             if ((screenId === 'screen-dashboard' || screenId === 'screen-attendees' || 
                  screenId === 'screen-expenses' || screenId === 'screen-summary') && !currentEvent) {
-                showScreen('screen-home');
+                console.log('No currentEvent, redirecting to home');
+                if (screenId !== 'screen-home') {
+                    showScreen('screen-home');
+                }
                 return;
             }
             
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-            document.getElementById(screenId).classList.add('active');
+            const targetScreen = document.getElementById(screenId);
+            if (targetScreen) {
+                targetScreen.classList.add('active');
+                console.log('Screen activated:', screenId);
+            } else {
+                console.error('Screen not found:', screenId);
+                return;
+            }
             
             // Update nav
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
@@ -1434,27 +1446,39 @@
         // ============================================
         // EVENT CREATION
         // ============================================
-        function selectType(chip) {
-            document.querySelectorAll('.chips .chip').forEach(c => c.classList.remove('selected'));
+        function selectTypeChip(chip) {
+            // Only affect chips in the type-chips container
+            document.querySelectorAll('#type-chips .chip').forEach(c => c.classList.remove('selected'));
+            chip.classList.add('selected');
+        }
+        
+        function selectIcon(chip) {
+            // Only affect chips in the icon-chips container
+            document.querySelectorAll('#icon-chips .chip').forEach(c => c.classList.remove('selected'));
             chip.classList.add('selected');
         }
 
         async function createEvent(e) {
             e.preventDefault();
+            console.log('createEvent called');
             
             try {
                 const name = document.getElementById('org-name').value.trim();
                 const phone = document.getElementById('org-phone').value.trim();
                 const city = document.getElementById('event-city').value.trim();
                 const date = document.getElementById('event-date').value;
-                const type = document.querySelector('#form-create .chip.selected')?.dataset.type || 'soltera';
+                const type = document.querySelector('#type-chips .chip.selected')?.dataset.type || 'soltera';
+                
+                console.log('Form data:', { name, phone, city, date, type });
                 
                 if (!name || !phone || !city || !date) {
                     showToast('Rellena todos los campos');
+                    console.log('Validation failed - missing fields');
                     return;
                 }
                 
                 const code = generateCode();
+                console.log('Generated code:', code);
                 
                 currentEvent = {
                     code: code,
@@ -1477,11 +1501,15 @@
                     paid: 0
                 });
                 
+                console.log('Event created:', currentEvent);
+                
                 saveEvent();
+                console.log('Event saved to localStorage');
                 
                 // Send webhook (don't await, fire and forget)
                 sendWebhook();
                 
+                console.log('Switching to dashboard');
                 showScreen('screen-dashboard');
                 showToast('¡Despedida creada! Código: ' + code);
                 
@@ -1770,11 +1798,6 @@
                     </div>
                 `;
             }).join('');
-        }
-
-        function selectIcon(chip) {
-            document.querySelectorAll('#icon-chips .chip').forEach(c => c.classList.remove('selected'));
-            chip.classList.add('selected');
         }
 
         function addCategory(e) {
@@ -2199,11 +2222,15 @@
         // INIT
         // ============================================
         function init() {
+            console.log('init() started');
             try {
                 // Check for saved event
                 const lastCode = localStorage.getItem('lastEventCode');
+                console.log('lastEventCode from localStorage:', lastCode);
+                
                 if (lastCode) {
                     const loaded = loadEvent(lastCode);
+                    console.log('loadEvent result:', loaded, 'currentEvent:', !!currentEvent);
                     if (loaded && currentEvent) {
                         showScreen('screen-dashboard');
                         return;
@@ -2211,6 +2238,7 @@
                 }
                 
                 // Default: show home
+                console.log('Showing home screen');
                 showScreen('screen-home');
                 
                 // Set min date for event
@@ -2225,6 +2253,7 @@
                 currentEvent = null;
                 showScreen('screen-home');
             }
+            console.log('init() completed');
         }
 
         // Register Service Worker (only in production with HTTPS)

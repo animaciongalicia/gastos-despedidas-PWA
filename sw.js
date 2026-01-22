@@ -1,4 +1,4 @@
-const CACHE_NAME = 'despedidas-v2';
+const CACHE_NAME = 'despedidas-v3';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
