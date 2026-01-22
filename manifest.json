@@ -1,0 +1,27 @@
+{
+  "name": "Gestor de Despedidas - despedidasgalicia.es",
+  "short_name": "Despedidas",
+  "description": "Organiza los gastos de tu despedida de soltera/o sin dramas",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FAFAFA",
+  "theme_color": "#E91E63",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["utilities", "finance"],
+  "lang": "es",
+  "dir": "ltr"
+}
