@@ -48,7 +48,10 @@
         .btn-primary:active { background: var(--primary-dark); transform: scale(0.98); }
         .btn-secondary { background: var(--bg-card); color: var(--text); border: 2px solid var(--border); }
         .btn-accent { background: var(--accent); color: var(--secondary); }
+        .btn-danger { background: var(--danger); color: white; }
         .btn-small { padding: 12px 20px; font-size: 14px; }
+        .btn-group { display: flex; gap: 10px; }
+        .btn-group .btn { flex: 1; }
         .form-group { margin-bottom: 20px; }
         .form-label { display: block; font-size: 14px; font-weight: 600; margin-bottom: 8px; }
         .form-input { width: 100%; padding: 16px; border: 2px solid var(--border); border-radius: var(--radius-sm); font-family: inherit; font-size: 16px; background: var(--bg-card); }
@@ -65,18 +68,22 @@
         .event-city { font-family: 'Bebas Neue', sans-serif; font-size: 24px; }
         .event-code { background: rgba(255,255,255,0.15); padding: 6px 12px; border-radius: 20px; font-size: 12px; display: inline-block; margin-top: 8px; cursor: pointer; }
         .event-date { font-size: 14px; opacity: 0.8; margin-top: 4px; }
-        .attendee-item { display: flex; align-items: center; gap: 14px; padding: 14px 0; border-bottom: 1px solid var(--border); }
+        .attendee-item { display: flex; align-items: center; gap: 14px; padding: 14px 0; border-bottom: 1px solid var(--border); cursor: pointer; }
         .attendee-item:last-child { border-bottom: none; }
-        .attendee-avatar { width: 48px; height: 48px; border-radius: 50%; background: var(--primary-light); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 18px; color: var(--primary); }
+        .attendee-item:active { background: var(--bg); }
+        .attendee-avatar { width: 48px; height: 48px; border-radius: 50%; background: var(--primary-light); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 18px; color: var(--primary); flex-shrink: 0; }
         .attendee-avatar.vip { background: var(--accent); color: var(--secondary); }
-        .attendee-info { flex: 1; }
-        .attendee-name { font-weight: 600; font-size: 15px; display: flex; align-items: center; gap: 8px; }
+        .attendee-info { flex: 1; min-width: 0; }
+        .attendee-name { font-weight: 600; font-size: 15px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
         .badge { font-size: 10px; padding: 3px 8px; border-radius: 20px; font-weight: 600; }
         .badge-vip { background: var(--accent); color: var(--secondary); }
         .badge-paid { background: var(--success); color: white; }
         .badge-pending { background: var(--danger); color: white; }
+        .badge-partial { background: var(--warning); color: white; }
         .attendee-amount { font-size: 13px; color: var(--text-muted); }
+        .attendee-amount strong { color: var(--text); }
         .category-item { display: flex; align-items: center; justify-content: space-between; padding: 16px; background: var(--bg-card); border-radius: var(--radius-sm); margin-bottom: 10px; box-shadow: var(--shadow); cursor: pointer; }
+        .category-item:active { transform: scale(0.98); }
         .category-left { display: flex; align-items: center; gap: 14px; }
         .category-icon { width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 22px; }
         .category-name { font-weight: 600; }
@@ -90,7 +97,7 @@
         .nav-item span:last-child { font-size: 11px; font-weight: 600; }
         .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 200; align-items: flex-end; justify-content: center; }
         .modal-overlay.active { display: flex; }
-        .modal { background: var(--bg-card); width: 100%; max-width: 480px; border-radius: var(--radius) var(--radius) 0 0; padding: 24px; max-height: 90vh; overflow-y: auto; }
+        .modal { background: var(--bg-card); width: 100%; max-width: 480px; border-radius: var(--radius) var(--radius) 0 0; padding: 24px; padding-bottom: 40px; max-height: 90vh; overflow-y: auto; }
         .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
         .modal-title { font-size: 20px; font-weight: 700; }
         .modal-close { width: 36px; height: 36px; border-radius: 50%; border: none; background: var(--bg); cursor: pointer; font-size: 18px; }
@@ -102,7 +109,8 @@
         .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
         .chip { padding: 8px 14px; background: var(--bg); border: 2px solid var(--border); border-radius: 20px; font-size: 13px; cursor: pointer; }
         .chip.selected { background: var(--primary-light); border-color: var(--primary); color: var(--primary); }
-        .expense-item { display: flex; justify-content: space-between; padding: 14px; background: var(--bg); border-radius: var(--radius-sm); margin-bottom: 8px; }
+        .expense-item { display: flex; justify-content: space-between; padding: 14px; background: var(--bg); border-radius: var(--radius-sm); margin-bottom: 8px; cursor: pointer; }
+        .expense-item:active { opacity: 0.7; }
         .expense-name { font-weight: 600; font-size: 14px; }
         .expense-payer { font-size: 12px; color: var(--text-muted); }
         .expense-amount { font-weight: 700; }
@@ -115,6 +123,9 @@
         .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
         .whatsapp-preview { background: #DCF8C6; border-radius: var(--radius-sm); padding: 16px; font-size: 14px; line-height: 1.6; white-space: pre-wrap; max-height: 300px; overflow-y: auto; }
         .share-code { font-family: 'Bebas Neue', monospace; font-size: 28px; letter-spacing: 3px; text-align: center; color: var(--primary); padding: 16px; background: var(--bg); border-radius: var(--radius-sm); margin-bottom: 12px; }
+        .info-text { font-size: 12px; color: var(--text-muted); margin-top: 8px; }
+        .danger-zone { margin-top: 30px; padding-top: 20px; border-top: 1px solid var(--border); }
+        .mb-10 { margin-bottom: 10px; }
         .mb-20 { margin-bottom: 20px; }
         .mt-20 { margin-top: 20px; }
         .text-center { text-align: center; }
@@ -195,7 +206,11 @@
         <div class="screen" id="screen-attendees">
             <h2 style="font-size:24px;margin-bottom:20px">Asistentes</h2>
             <div id="attendees-list"></div>
-            <button class="btn btn-primary mt-20" id="btn-add-attendee">➕ Añadir asistente</button>
+            <div class="btn-group mt-20">
+                <button class="btn btn-primary" id="btn-add-attendee">➕ Añadir</button>
+                <button class="btn btn-secondary" id="btn-add-contact">📱 Contactos</button>
+            </div>
+            <p class="info-text text-center">Toca un asistente para editarlo</p>
         </div>
 
         <!-- EXPENSES -->
@@ -231,6 +246,7 @@
             </div>
             <div id="expenses-list"></div>
             <button class="btn btn-primary mt-20" id="btn-add-expense">➕ Añadir gasto</button>
+            <p class="info-text text-center">Toca un gasto para editarlo</p>
         </div>
 
         <!-- NAV -->
@@ -250,48 +266,79 @@
             </div>
         </div>
 
+        <!-- ADD/EDIT ATTENDEE -->
         <div class="modal-overlay" id="modal-attendee">
             <div class="modal">
-                <div class="modal-header"><span class="modal-title">Añadir asistente</span><button class="modal-close" data-close="modal-attendee">✕</button></div>
-                <div class="form-group"><label class="form-label">Nombre *</label><input type="text" class="form-input" id="inp-att-name" placeholder="Pepe, María..."></div>
+                <div class="modal-header"><span class="modal-title" id="modal-att-title">Añadir asistente</span><button class="modal-close" data-close="modal-attendee">✕</button></div>
+                <input type="hidden" id="edit-att-id">
+                <div class="form-group"><label class="form-label">Nombre / Apodo *</label><input type="text" class="form-input" id="inp-att-name" placeholder="Pepe, María, El
+
+ 
+
+
+
+
+
+"></div>
                 <div class="form-group"><label class="form-label">Teléfono</label><input type="tel" class="form-input" id="inp-att-phone" placeholder="678 123 456"></div>
-                <div class="toggle-group"><span>👑 Es el novio/a (no paga)</span><div class="toggle" id="toggle-vip"></div></div>
-                <button class="btn btn-primary mt-20" id="btn-submit-attendee">Añadir</button>
+                <div class="toggle-group"><span>👑 Es el novio/a (NO paga)</span><div class="toggle" id="toggle-vip"></div></div>
+                <div class="form-group" id="paid-group" style="display:none">
+                    <label class="form-label">Ya ha pagado (€)</label>
+                    <input type="number" class="form-input" id="inp-att-paid" placeholder="0" step="0.01">
+                    <p class="info-text">Adelantos, señales... se descontará de lo que debe</p>
+                </div>
+                <button class="btn btn-primary mt-20" id="btn-submit-attendee">Guardar</button>
+                <div class="danger-zone" id="att-danger" style="display:none">
+                    <button class="btn btn-danger" id="btn-delete-attendee">🗑️ Eliminar asistente</button>
+                </div>
             </div>
         </div>
 
+        <!-- ADD CATEGORY -->
         <div class="modal-overlay" id="modal-category">
             <div class="modal">
                 <div class="modal-header"><span class="modal-title">Nueva categoría</span><button class="modal-close" data-close="modal-category">✕</button></div>
                 <div class="form-group"><label class="form-label">Nombre *</label><input type="text" class="form-input" id="inp-cat-name" placeholder="Stripper, Barco..."></div>
                 <div class="form-group"><label class="form-label">Icono</label>
                     <div class="chips" id="icon-chips">
-                        <span class="chip selected" data-icon="🎯">🎯</span><span class="chip" data-icon="🚤">🚤</span><span class="chip" data-icon="💃">💃</span><span class="chip" data-icon="🎮">🎮</span><span class="chip" data-icon="🍻">🍻</span><span class="chip" data-icon="🎁">🎁</span>
+                        <span class="chip selected" data-icon="🎯">🎯</span><span class="chip" data-icon="🚤">🚤</span><span class="chip" data-icon="💃">💃</span><span class="chip" data-icon="🎮">🎮</span><span class="chip" data-icon="🍻">🍻</span><span class="chip" data-icon="🎁">🎁</span><span class="chip" data-icon="🚌">🚌</span><span class="chip" data-icon="💅">💅</span><span class="chip" data-icon="🎤">🎤</span><span class="chip" data-icon="🏖️">🏖️</span>
                     </div>
                 </div>
                 <button class="btn btn-primary mt-20" id="btn-submit-category">Crear</button>
             </div>
         </div>
 
+        <!-- ADD/EDIT EXPENSE -->
         <div class="modal-overlay" id="modal-expense">
             <div class="modal">
-                <div class="modal-header"><span class="modal-title">Añadir gasto</span><button class="modal-close" data-close="modal-expense">✕</button></div>
+                <div class="modal-header"><span class="modal-title" id="modal-exp-title">Añadir gasto</span><button class="modal-close" data-close="modal-expense">✕</button></div>
+                <input type="hidden" id="edit-exp-id">
                 <div class="form-group"><label class="form-label">Concepto *</label><input type="text" class="form-input" id="inp-exp-name" placeholder="Reserva, Entrada..."></div>
                 <div class="form-group"><label class="form-label">Importe € *</label><input type="number" class="form-input" id="inp-exp-amount" placeholder="0" step="0.01"></div>
-                <div class="form-group"><label class="form-label">¿Quién pagó?</label><select class="form-input" id="inp-exp-payer"><option value="">Nadie aún</option></select></div>
-                <div class="form-group"><label class="form-label">¿Quiénes participan?</label><div class="chips" id="exp-participants"></div></div>
-                <button class="btn btn-primary mt-20" id="btn-submit-expense">Añadir</button>
+                <div class="form-group"><label class="form-label">¿Quién lo pagó?</label><select class="form-input" id="inp-exp-payer"><option value="">Nadie aún / Bote común</option></select></div>
+                <div class="form-group">
+                    <label class="form-label">¿Quiénes participan?</label>
+                    <p class="info-text mb-10">Desmarca a quien no vaya a esta actividad</p>
+                    <div class="chips" id="exp-participants"></div>
+                </div>
+                <button class="btn btn-primary mt-20" id="btn-submit-expense">Guardar</button>
+                <div class="danger-zone" id="exp-danger" style="display:none">
+                    <button class="btn btn-danger" id="btn-delete-expense">🗑️ Eliminar gasto</button>
+                </div>
             </div>
         </div>
 
+        <!-- SHARE -->
         <div class="modal-overlay" id="modal-share">
             <div class="modal">
                 <div class="modal-header"><span class="modal-title">Compartir</span><button class="modal-close" data-close="modal-share">✕</button></div>
                 <div class="share-code" id="share-code">-</div>
                 <div style="display:flex;gap:10px"><button class="btn btn-secondary btn-small" style="flex:1" id="btn-copy-code">📋 Copiar</button><button class="btn btn-primary btn-small" style="flex:1" id="btn-share-wa">💬 WhatsApp</button></div>
+                <p class="info-text text-center mt-20">Los asistentes pueden ver el resumen con este código (solo lectura)</p>
             </div>
         </div>
 
+        <!-- WHATSAPP MESSAGE -->
         <div class="modal-overlay" id="modal-whatsapp">
             <div class="modal">
                 <div class="modal-header"><span class="modal-title">Mensaje</span><button class="modal-close" data-close="modal-whatsapp">✕</button></div>
@@ -359,14 +406,11 @@ function nav(screenId) {
     $$('.screen').forEach(s => s.classList.remove('active'));
     $(screenId).classList.add('active');
     
-    // Show/hide nav
     const showNav = needsEvent.includes(screenId) && screenId !== 'screen-category';
     $('bottom-nav').classList.toggle('visible', showNav);
     
-    // Update nav buttons
     $$('.nav-item').forEach(n => n.classList.toggle('active', n.dataset.screen === screenId));
     
-    // Render content
     if(screenId === 'screen-dashboard') renderDash();
     if(screenId === 'screen-attendees') renderAtt();
     if(screenId === 'screen-expenses') renderCats();
@@ -376,6 +420,52 @@ function nav(screenId) {
 
 function openModal(id) { $(id).classList.add('active'); }
 function closeModal(id) { $(id).classList.remove('active'); }
+
+// ==================== CALCULATIONS ====================
+function calcStats() {
+    const total = E.expenses.reduce((s,x) => s + x.amount, 0);
+    const paying = E.attendees.filter(a => !a.vip);
+    const pp = paying.length ? total / paying.length : 0;
+    
+    // Paid = direct payments from attendees + expenses paid by someone
+    let paid = E.attendees.reduce((s,a) => s + (a.paid||0), 0);
+    paid += E.expenses.filter(x=>x.paidBy).reduce((s,x)=>s+x.amount,0);
+    
+    return {total, pp, paid, pending: Math.max(0, total-paid)};
+}
+
+function calcPersonStats() {
+    const stats = {};
+    E.attendees.forEach(a => stats[a.id] = {owes:0, paid: a.paid||0});
+    
+    E.expenses.forEach(exp => {
+        // Get participants - default to all non-VIP if not specified
+        let parts = exp.participants;
+        if(!parts || !parts.length) {
+            parts = E.attendees.filter(a=>!a.vip).map(a=>a.id);
+        }
+        
+        // Filter to only paying participants (non-VIP)
+        const payingParts = parts.filter(id => {
+            const att = E.attendees.find(a=>a.id===id);
+            return att && !att.vip;
+        });
+        
+        if(payingParts.length) {
+            const share = exp.amount / payingParts.length;
+            payingParts.forEach(id => {
+                if(stats[id]) stats[id].owes += share;
+            });
+        }
+        
+        // If someone paid this expense, add to their paid amount
+        if(exp.paidBy && stats[exp.paidBy]) {
+            stats[exp.paidBy].paid += exp.amount;
+        }
+    });
+    
+    return stats;
+}
 
 // ==================== RENDER FUNCTIONS ====================
 function renderDash() {
@@ -392,32 +482,6 @@ function renderDash() {
     $('stat-pending').textContent = stats.pending.toFixed(0)+'€';
 }
 
-function calcStats() {
-    const total = E.expenses.reduce((s,x) => s + x.amount, 0);
-    const paying = E.attendees.filter(a => !a.vip);
-    const pp = paying.length ? total / paying.length : 0;
-    const paid = E.attendees.reduce((s,a) => s + (a.paid||0), 0) + E.expenses.filter(x=>x.paidBy).reduce((s,x)=>s+x.amount,0);
-    return {total, pp, paid, pending: Math.max(0, total-paid)};
-}
-
-function calcPersonStats() {
-    const stats = {};
-    E.attendees.forEach(a => stats[a.id] = {owes:0, paid:a.paid||0});
-    E.expenses.forEach(exp => {
-        const parts = exp.participants || E.attendees.filter(a=>!a.vip).map(a=>a.id);
-        const payingParts = parts.filter(id => {
-            const att = E.attendees.find(a=>a.id===id);
-            return att && !att.vip;
-        });
-        if(payingParts.length) {
-            const share = exp.amount / payingParts.length;
-            payingParts.forEach(id => stats[id].owes += share);
-        }
-        if(exp.paidBy && stats[exp.paidBy]) stats[exp.paidBy].paid += exp.amount;
-    });
-    return stats;
-}
-
 function renderAtt() {
     const list = $('attendees-list');
     if(!E.attendees.length) {
@@ -428,14 +492,22 @@ function renderAtt() {
     list.innerHTML = E.attendees.map(a => {
         const s = stats[a.id] || {owes:0,paid:0};
         const bal = s.paid - s.owes;
-        let badge = a.vip ? '<span class="badge badge-vip">👑 VIP</span>' : 
-                   bal >= 0 ? '<span class="badge badge-paid">✓</span>' : 
-                   '<span class="badge badge-pending">Debe</span>';
+        let badge = '';
+        if(a.vip) {
+            badge = '<span class="badge badge-vip">👑 NO PAGA</span>';
+        } else if(bal >= 0) {
+            badge = '<span class="badge badge-paid">✓ Pagado</span>';
+        } else if(s.paid > 0) {
+            badge = '<span class="badge badge-partial">Parcial</span>';
+        } else {
+            badge = '<span class="badge badge-pending">Pendiente</span>';
+        }
+        
         return `<div class="attendee-item" data-id="${a.id}">
             <div class="attendee-avatar ${a.vip?'vip':''}">${a.name.substring(0,2).toUpperCase()}</div>
             <div class="attendee-info">
                 <div class="attendee-name">${a.name} ${badge}</div>
-                <div class="attendee-amount">${a.vip ? '¡No paga!' : `Debe: ${Math.max(0,-bal).toFixed(0)}€`}</div>
+                <div class="attendee-amount">${a.vip ? '👑 ¡El/La protagonista!' : `Debe: <strong>${Math.max(0,-bal).toFixed(0)}€</strong> · Pagado: ${s.paid.toFixed(0)}€`}</div>
             </div>
         </div>`;
     }).join('');
@@ -463,13 +535,14 @@ function renderExpenses() {
     $('cat-total').textContent = exps.reduce((s,x)=>s+x.amount,0).toFixed(0)+'€';
     
     if(!exps.length) {
-        $('expenses-list').innerHTML = '<div class="empty-state"><div class="empty-state-icon">💰</div><p>Sin gastos</p></div>';
+        $('expenses-list').innerHTML = '<div class="empty-state"><div class="empty-state-icon">💰</div><p>Sin gastos en esta categoría</p></div>';
         return;
     }
     $('expenses-list').innerHTML = exps.map(x => {
         const payer = x.paidBy ? E.attendees.find(a=>a.id===x.paidBy) : null;
+        const numParts = x.participants ? x.participants.length : E.attendees.filter(a=>!a.vip).length;
         return `<div class="expense-item" data-id="${x.id}">
-            <div><div class="expense-name">${x.name}</div><div class="expense-payer">${payer?'Pagó '+payer.name:'Pendiente'}</div></div>
+            <div><div class="expense-name">${x.name}</div><div class="expense-payer">${payer?'Pagó '+payer.name:'Pendiente de pago'} · ${numParts} personas</div></div>
             <div class="expense-amount">${x.amount.toFixed(0)}€</div>
         </div>`;
     }).join('');
@@ -480,11 +553,11 @@ function renderSummary() {
     $('summary-persons').innerHTML = E.attendees.map(a => {
         const s = stats[a.id] || {owes:0,paid:0};
         const bal = s.paid - s.owes;
-        return `<div class="attendee-item">
+        return `<div class="attendee-item" style="cursor:default">
             <div class="attendee-avatar ${a.vip?'vip':''}">${a.name.substring(0,2).toUpperCase()}</div>
             <div class="attendee-info">
-                <div class="attendee-name">${a.name}</div>
-                <div class="attendee-amount">${a.vip?'VIP':`Debe: ${s.owes.toFixed(0)}€ · Pagó: ${s.paid.toFixed(0)}€`}</div>
+                <div class="attendee-name">${a.name} ${a.vip?'👑':''}</div>
+                <div class="attendee-amount">${a.vip?'No paga':`Debe: ${s.owes.toFixed(0)}€ · Pagó: ${s.paid.toFixed(0)}€`}</div>
             </div>
             ${!a.vip ? `<div style="font-weight:700;color:${bal>=0?'var(--success)':'var(--danger)'}">${bal>=0?'+':''}${bal.toFixed(0)}€</div>` : ''}
         </div>`;
@@ -496,7 +569,225 @@ function renderSummary() {
     }).join('');
 }
 
-// ==================== ACTIONS ====================
+// ==================== ATTENDEE ACTIONS ====================
+function openAttendeeModal(id = null) {
+    const isEdit = !!id;
+    $('modal-att-title').textContent = isEdit ? 'Editar asistente' : 'Añadir asistente';
+    $('edit-att-id').value = id || '';
+    $('att-danger').style.display = isEdit ? 'block' : 'none';
+    $('paid-group').style.display = isEdit ? 'block' : 'none';
+    
+    if(isEdit) {
+        const a = E.attendees.find(x => x.id === id);
+        if(!a) return;
+        $('inp-att-name').value = a.name;
+        $('inp-att-phone').value = a.phone || '';
+        $('inp-att-paid').value = a.paid || 0;
+        $('toggle-vip').classList.toggle('active', a.vip);
+    } else {
+        $('inp-att-name').value = '';
+        $('inp-att-phone').value = '';
+        $('inp-att-paid').value = 0;
+        $('toggle-vip').classList.remove('active');
+    }
+    openModal('modal-attendee');
+}
+
+function saveAttendee() {
+    const id = $('edit-att-id').value;
+    const name = $('inp-att-name').value.trim();
+    const phone = $('inp-att-phone').value.trim();
+    const vip = $('toggle-vip').classList.contains('active');
+    const paid = parseFloat($('inp-att-paid').value) || 0;
+    
+    if(!name) { toast('Pon un nombre'); return; }
+    
+    // If setting as VIP, remove VIP from others first
+    if(vip) E.attendees.forEach(a => a.vip = false);
+    
+    if(id) {
+        // Edit existing
+        const a = E.attendees.find(x => x.id === id);
+        if(a) {
+            a.name = name;
+            a.phone = phone;
+            a.vip = vip;
+            a.paid = paid;
+        }
+        toast('Asistente actualizado');
+    } else {
+        // Add new
+        E.attendees.push({id: Date.now().toString(), name, phone, vip, paid: 0});
+        toast('Asistente añadido');
+    }
+    
+    save();
+    closeModal('modal-attendee');
+    renderAtt();
+}
+
+function deleteAttendee() {
+    const id = $('edit-att-id').value;
+    if(!id) return;
+    if(!confirm('¿Eliminar este asistente?')) return;
+    
+    E.attendees = E.attendees.filter(a => a.id !== id);
+    
+    // Remove from expense participants
+    E.expenses.forEach(exp => {
+        if(exp.participants) {
+            exp.participants = exp.participants.filter(p => p !== id);
+        }
+        if(exp.paidBy === id) exp.paidBy = null;
+    });
+    
+    save();
+    closeModal('modal-attendee');
+    renderAtt();
+    toast('Asistente eliminado');
+}
+
+// ==================== CONTACTS API ====================
+async function addFromContacts() {
+    // Check if Contact Picker API is available
+    if(!('contacts' in navigator && 'ContactsManager' in window)) {
+        toast('Tu navegador no soporta acceso a contactos. Usa Chrome en Android.');
+        return;
+    }
+    
+    try {
+        const props = ['name', 'tel'];
+        const opts = {multiple: true};
+        const contacts = await navigator.contacts.select(props, opts);
+        
+        if(contacts && contacts.length) {
+            let added = 0;
+            contacts.forEach(c => {
+                const name = c.name && c.name[0] ? c.name[0] : 'Sin nombre';
+                const phone = c.tel && c.tel[0] ? c.tel[0] : '';
+                
+                // Check if already exists (by phone)
+                const exists = phone && E.attendees.some(a => a.phone === phone);
+                if(!exists) {
+                    E.attendees.push({
+                        id: Date.now().toString() + Math.random(),
+                        name: name,
+                        phone: phone,
+                        vip: false,
+                        paid: 0
+                    });
+                    added++;
+                }
+            });
+            
+            if(added > 0) {
+                save();
+                renderAtt();
+                toast(`${added} contacto${added>1?'s':''} añadido${added>1?'s':''}`);
+            } else {
+                toast('Los contactos ya estaban añadidos');
+            }
+        }
+    } catch(err) {
+        console.error('Contacts error:', err);
+        if(err.name === 'SecurityError') {
+            toast('Permite el acceso a contactos en tu navegador');
+        } else {
+            toast('No se pudieron obtener los contactos');
+        }
+    }
+}
+
+// ==================== EXPENSE ACTIONS ====================
+function prepareExpenseModal(expId = null) {
+    const isEdit = !!expId;
+    $('modal-exp-title').textContent = isEdit ? 'Editar gasto' : 'Añadir gasto';
+    $('edit-exp-id').value = expId || '';
+    $('exp-danger').style.display = isEdit ? 'block' : 'none';
+    
+    // Populate payer dropdown
+    const sel = $('inp-exp-payer');
+    sel.innerHTML = '<option value="">Nadie aún / Bote común</option>' + 
+        E.attendees.map(a => `<option value="${a.id}">${a.name}</option>`).join('');
+    
+    // Populate participants (non-VIP only)
+    const nonVip = E.attendees.filter(a => !a.vip);
+    
+    if(isEdit) {
+        const exp = E.expenses.find(x => x.id === expId);
+        if(!exp) return;
+        $('inp-exp-name').value = exp.name;
+        $('inp-exp-amount').value = exp.amount;
+        sel.value = exp.paidBy || '';
+        
+        const parts = exp.participants || nonVip.map(a => a.id);
+        $('exp-participants').innerHTML = nonVip.map(a => 
+            `<span class="chip ${parts.includes(a.id)?'selected':''}" data-id="${a.id}">${a.name}</span>`
+        ).join('');
+    } else {
+        $('inp-exp-name').value = '';
+        $('inp-exp-amount').value = '';
+        sel.value = '';
+        // All selected by default
+        $('exp-participants').innerHTML = nonVip.map(a => 
+            `<span class="chip selected" data-id="${a.id}">${a.name}</span>`
+        ).join('');
+    }
+    
+    openModal('modal-expense');
+}
+
+function saveExpense() {
+    const id = $('edit-exp-id').value;
+    const name = $('inp-exp-name').value.trim();
+    const amount = parseFloat($('inp-exp-amount').value) || 0;
+    const paidBy = $('inp-exp-payer').value || null;
+    const participants = Array.from($$('#exp-participants .chip.selected')).map(c => c.dataset.id);
+    
+    if(!name || !amount) { toast('Pon nombre e importe'); return; }
+    if(!participants.length) { toast('Selecciona al menos un participante'); return; }
+    
+    if(id) {
+        // Edit existing
+        const exp = E.expenses.find(x => x.id === id);
+        if(exp) {
+            exp.name = name;
+            exp.amount = amount;
+            exp.paidBy = paidBy;
+            exp.participants = participants;
+        }
+        toast('Gasto actualizado');
+    } else {
+        // Add new
+        E.expenses.push({
+            id: 'e'+Date.now(),
+            catId: catId,
+            name: name,
+            amount: amount,
+            paidBy: paidBy,
+            participants: participants
+        });
+        toast('Gasto añadido');
+    }
+    
+    save();
+    closeModal('modal-expense');
+    renderExpenses();
+}
+
+function deleteExpense() {
+    const id = $('edit-exp-id').value;
+    if(!id) return;
+    if(!confirm('¿Eliminar este gasto?')) return;
+    
+    E.expenses = E.expenses.filter(x => x.id !== id);
+    save();
+    closeModal('modal-expense');
+    renderExpenses();
+    toast('Gasto eliminado');
+}
+
+// ==================== CREATE EVENT ====================
 function createEvent() {
     const name = $('inp-name').value.trim();
     const phone = $('inp-phone').value.trim();
@@ -538,27 +829,11 @@ function sendWebhook() {
     }).catch(() => {});
 }
 
-function addAttendee() {
-    const name = $('inp-att-name').value.trim();
-    const phone = $('inp-att-phone').value.trim();
-    const vip = $('toggle-vip').classList.contains('active');
-    if(!name) { toast('Pon un nombre'); return; }
-    if(vip) E.attendees.forEach(a => a.vip = false);
-    E.attendees.push({id: Date.now().toString(), name, phone, vip, paid: 0});
-    save();
-    closeModal('modal-attendee');
-    renderAtt();
-    toast('Añadido');
-    $('inp-att-name').value = '';
-    $('inp-att-phone').value = '';
-    $('toggle-vip').classList.remove('active');
-}
-
 function addCategory() {
     const name = $('inp-cat-name').value.trim();
     const icon = document.querySelector('#icon-chips .chip.selected')?.dataset.icon || '📦';
     if(!name) { toast('Pon un nombre'); return; }
-    const colors = ['#4CAF50','#2196F3','#FF9800','#9C27B0','#E91E63','#607D8B'];
+    const colors = ['#4CAF50','#2196F3','#FF9800','#9C27B0','#E91E63','#607D8B','#795548','#00BCD4'];
     E.categories.push({id: 'c'+Date.now(), name, icon, color: colors[Math.floor(Math.random()*colors.length)]});
     save();
     closeModal('modal-category');
@@ -567,27 +842,7 @@ function addCategory() {
     $('inp-cat-name').value = '';
 }
 
-function prepareExpenseModal() {
-    const sel = $('inp-exp-payer');
-    sel.innerHTML = '<option value="">Nadie aún</option>' + E.attendees.map(a => `<option value="${a.id}">${a.name}</option>`).join('');
-    $('exp-participants').innerHTML = E.attendees.filter(a=>!a.vip).map(a => `<span class="chip selected" data-id="${a.id}">${a.name}</span>`).join('');
-}
-
-function addExpense() {
-    const name = $('inp-exp-name').value.trim();
-    const amount = parseFloat($('inp-exp-amount').value) || 0;
-    const paidBy = $('inp-exp-payer').value || null;
-    const participants = Array.from($$('#exp-participants .chip.selected')).map(c => c.dataset.id);
-    if(!name || !amount) { toast('Pon nombre e importe'); return; }
-    E.expenses.push({id: 'e'+Date.now(), catId, name, amount, paidBy, participants: participants.length ? participants : null});
-    save();
-    closeModal('modal-expense');
-    renderExpenses();
-    toast('Gasto añadido');
-    $('inp-exp-name').value = '';
-    $('inp-exp-amount').value = '';
-}
-
+// ==================== WHATSAPP & PDF ====================
 function genWhatsAppMsg() {
     const stats = calcPersonStats();
     const totals = calcStats();
@@ -600,7 +855,7 @@ function genWhatsAppMsg() {
         const t = E.expenses.filter(x=>x.catId===c.id).reduce((s,x)=>s+x.amount,0);
         if(t) m += `${c.icon} ${c.name}: ${t.toFixed(0)}€\n`;
     });
-    m += `\n👤 *CADA UNO:*\n`;
+    m += `\n👤 *CADA UNO DEBE:*\n`;
     E.attendees.forEach(a => {
         if(a.vip) { m += `👑 ${a.name}: ¡NO PAGA!\n`; }
         else {
@@ -654,9 +909,10 @@ function exportPDF() {
     E.attendees.forEach(a => {
         const s = stats[a.id] || {owes:0,paid:0};
         const bal = s.paid - s.owes;
-        const txt = a.vip ? `${a.name}: VIP (no paga)` : `${a.name}: Debe ${s.owes.toFixed(0)}€, Pagó ${s.paid.toFixed(0)}€, Saldo ${bal>=0?'+':''}${bal.toFixed(0)}€`;
+        const txt = a.vip ? `${a.name}: 👑 NO PAGA (protagonista)` : `${a.name}: Debe ${s.owes.toFixed(0)}€, Pagó ${s.paid.toFixed(0)}€, Saldo ${bal>=0?'+':''}${bal.toFixed(0)}€`;
         doc.text(txt, 25, y);
         y += 6;
+        if(y > 270) { doc.addPage(); y = 20; }
     });
     
     doc.setFontSize(9);
@@ -669,32 +925,57 @@ function exportPDF() {
 
 // ==================== EVENT LISTENERS ====================
 document.addEventListener('DOMContentLoaded', function() {
-    // Navigation buttons
+    // Navigation
     $('btn-create').onclick = () => nav('screen-create');
     $('btn-back-home').onclick = () => nav('screen-home');
     $('btn-recover').onclick = () => openModal('modal-recover');
     $('btn-back-expenses').onclick = () => nav('screen-expenses');
     
-    // Form submissions
+    // Create event
     $('btn-submit-create').onclick = createEvent;
     $('btn-submit-recover').onclick = () => {
         const code = $('inp-recover').value.trim().toUpperCase();
         if(load(code)) { closeModal('modal-recover'); nav('screen-dashboard'); toast('Cargado'); }
         else toast('Código no encontrado');
     };
-    $('btn-submit-attendee').onclick = addAttendee;
-    $('btn-submit-category').onclick = addCategory;
-    $('btn-submit-expense').onclick = addExpense;
     
-    // Modal triggers
-    $('btn-add-attendee').onclick = () => openModal('modal-attendee');
+    // Attendees
+    $('btn-add-attendee').onclick = () => openAttendeeModal();
+    $('btn-add-contact').onclick = addFromContacts;
+    $('btn-submit-attendee').onclick = saveAttendee;
+    $('btn-delete-attendee').onclick = deleteAttendee;
+    
+    // Click on attendee to edit
+    document.addEventListener('click', e => {
+        const att = e.target.closest('#attendees-list .attendee-item');
+        if(att) openAttendeeModal(att.dataset.id);
+    });
+    
+    // Categories
     $('btn-add-category').onclick = () => openModal('modal-category');
-    $('btn-add-expense').onclick = () => { prepareExpenseModal(); openModal('modal-expense'); };
+    $('btn-submit-category').onclick = addCategory;
+    
+    // Click on category
+    document.addEventListener('click', e => {
+        const cat = e.target.closest('.category-item');
+        if(cat) { catId = cat.dataset.id; nav('screen-category'); }
+    });
+    
+    // Expenses
+    $('btn-add-expense').onclick = () => prepareExpenseModal();
+    $('btn-submit-expense').onclick = saveExpense;
+    $('btn-delete-expense').onclick = deleteExpense;
+    
+    // Click on expense to edit
+    document.addEventListener('click', e => {
+        const exp = e.target.closest('#expenses-list .expense-item');
+        if(exp) prepareExpenseModal(exp.dataset.id);
+    });
+    
+    // Share & WhatsApp
     $('btn-share').onclick = () => { $('share-code').textContent = E.code; openModal('modal-share'); };
     $('btn-whatsapp').onclick = () => { $('wa-preview').textContent = genWhatsAppMsg(); openModal('modal-whatsapp'); };
     $('btn-whatsapp2').onclick = () => { $('wa-preview').textContent = genWhatsAppMsg(); openModal('modal-whatsapp'); };
-    
-    // Share actions
     $('btn-copy-code').onclick = () => { navigator.clipboard.writeText(E.code); toast('Copiado'); };
     $('btn-share-wa').onclick = () => window.open('https://wa.me/?text='+encodeURIComponent('🎉 Despedida en '+E.city+'\nCódigo: '+E.code));
     $('btn-copy-wa').onclick = () => { navigator.clipboard.writeText($('wa-preview').textContent); toast('Copiado'); };
@@ -706,40 +987,25 @@ document.addEventListener('DOMContentLoaded', function() {
     $$('.modal-close').forEach(btn => btn.onclick = () => closeModal(btn.dataset.close));
     $$('.modal-overlay').forEach(m => m.onclick = e => { if(e.target === m) closeModal(m.id); });
     
-    // Toggle
+    // Toggles
     $('toggle-vip').onclick = function() { this.classList.toggle('active'); };
     
-    // Type chips
+    // Chips - type
     $$('#type-chips .chip').forEach(c => c.onclick = function() {
         $$('#type-chips .chip').forEach(x => x.classList.remove('selected'));
         this.classList.add('selected');
     });
     
-    // Icon chips
+    // Chips - icons
     $$('#icon-chips .chip').forEach(c => c.onclick = function() {
         $$('#icon-chips .chip').forEach(x => x.classList.remove('selected'));
         this.classList.add('selected');
     });
     
-    // Participant chips (toggle)
+    // Chips - participants (toggle)
     document.addEventListener('click', e => {
-        if(e.target.matches('#exp-participants .chip')) e.target.classList.toggle('selected');
-    });
-    
-    // Category click
-    document.addEventListener('click', e => {
-        const cat = e.target.closest('.category-item');
-        if(cat) { catId = cat.dataset.id; nav('screen-category'); }
-    });
-    
-    // Expense click (delete)
-    document.addEventListener('click', e => {
-        const exp = e.target.closest('.expense-item');
-        if(exp && confirm('¿Eliminar gasto?')) {
-            E.expenses = E.expenses.filter(x => x.id !== exp.dataset.id);
-            save();
-            renderExpenses();
-            toast('Eliminado');
+        if(e.target.matches('#exp-participants .chip')) {
+            e.target.classList.toggle('selected');
         }
     });
     
