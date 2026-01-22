@@ -148,10 +148,10 @@
             <div class="card mb-20">
                 <div class="card-title">💡 ¿Para qué sirve esto?</div>
                 <div style="font-size:14px;line-height:1.6;color:var(--text-muted)">
-                    <p style="margin-bottom:10px">✅ <strong>Conserva amistades</strong> — Que el dinero no estropee la fiesta</p>
-                    <p style="margin-bottom:10px">✅ <strong>Adiós al caos</strong> — Nada de excels, capturas y "¿quién pagó qué?"</p>
+                    <p style="margin-bottom:10px">✅ <strong>Conserva amistades</strong> — Que el dinero no rompa la fiesta</p>
+                    <p style="margin-bottom:10px">✅ <strong>Adiós al caos</strong> — Ni excels, ni gaitas "¿quién pagó qué?"</p>
                     <p style="margin-bottom:10px">✅ <strong>El prota no paga</strong> — Se divide automáticamente entre los demás</p>
-                    <p style="margin-bottom:10px">✅ <strong>Cada uno lo suyo</strong> — Si alguien no va a una actividad, no paga</p>
+                    <p style="margin-bottom:10px">✅ <strong>Cada uno lo suyo</strong> — Si no se va a una actividad, no se paga</p>
                     <p>✅ <strong>Comparte fácil</strong> — PDF y WhatsApp con un click</p>
                 </div>
             </div>
@@ -159,8 +159,8 @@
             <button class="btn btn-primary mb-20" id="btn-create">🎉 Crear nueva despedida</button>
             <div class="divider">o</div>
             <button class="btn btn-secondary" id="btn-recover">🔑 Tengo un código</button>
-            <p class="text-center text-muted mt-20" style="font-size:12px">📞 678 288 284 · despedidasgalicia.es</p>
-            <p class="text-center mt-20" style="font-size:11px;color:var(--text-muted);font-style:italic">"Boas badaladas e mellor resaca" 🍻</p>
+            <p class="text-center text-muted mt-20" style="font-size:12px">📞 678 288 284 · www.despedidasgalicia.es</p>
+            <p class="text-center mt-20" style="font-size:11px;color:var(--text-muted);font-style:italic">"Boas festas e mellores resacas" 🍻</p>
         </div>
 
         <!-- CREATE -->
@@ -178,7 +178,7 @@
             </div>
             <div class="form-group">
                 <label class="form-label">Ciudad del evento *</label>
-                <input type="text" class="form-input" id="inp-city" placeholder="A Coruña, Vigo, Santiago...">
+                <input type="text" class="form-input" id="inp-city" placeholder="A Coruña, Vigo, Sanxenxo...">
             </div>
             <div class="form-group">
                 <label class="form-label">Fecha del evento *</label>
@@ -297,8 +297,8 @@
                 <div class="form-group">
                     <label class="form-label">Rol</label>
                     <div class="chips" id="role-chips">
-                        <span class="chip selected" data-role="invitado">🎉 Invitado</span>
-                        <span class="chip" data-role="organizador">📋 Organizador</span>
+                        <span class="chip selected" data-role="invitado">🎉 Invitado/a</span>
+                        <span class="chip" data-role="organizador">📋 Organizador/a</span>
                         <span class="chip" data-role="protagonista">👑 Novio/Novia</span>
                     </div>
                     <p class="info-text">El novio/novia nunca paga</p>
@@ -1069,12 +1069,12 @@ function exportPDF() {
     doc.roundedRect(15, y-5, 180, 15, 3, 3, 'F');
     doc.setFontSize(10);
     doc.setTextColor(26,26,46);
-    doc.text('"'+frase+'" - despedidasgalicia.es', 105, y+4, {align:'center'});
+    doc.text('"'+frase+'" - www.despedidasgalicia.es', 105, y+4, {align:'center'});
     
     // Footer
     doc.setFontSize(9);
     doc.setTextColor(107,114,128);
-    doc.text('despedidasgalicia.es - 678 288 284 - Que viva a festa!', 105, 285, {align:'center'});
+    doc.text('www.despedidasgalicia.es - 678 288 284 - Que viva a festa!', 105, 285, {align:'center'});
     
     doc.save('despedida_'+E.city.toLowerCase().replace(/\s+/g,'_')+'_'+E.code+'.pdf');
     toast('PDF descargado');
