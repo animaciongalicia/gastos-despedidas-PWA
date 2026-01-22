@@ -1376,6 +1376,13 @@
         // SCREEN MANAGEMENT
         // ============================================
         function showScreen(screenId) {
+            // Protect against showing dashboard without event
+            if ((screenId === 'screen-dashboard' || screenId === 'screen-attendees' || 
+                 screenId === 'screen-expenses' || screenId === 'screen-summary') && !currentEvent) {
+                showScreen('screen-home');
+                return;
+            }
+            
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
             document.getElementById(screenId).classList.add('active');
             
@@ -1383,10 +1390,10 @@
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
             
             // Refresh dynamic content
-            if (screenId === 'screen-dashboard') updateDashboard();
-            if (screenId === 'screen-attendees') renderAttendees();
-            if (screenId === 'screen-expenses') renderCategories();
-            if (screenId === 'screen-summary') renderSummary();
+            if (screenId === 'screen-dashboard' && currentEvent) updateDashboard();
+            if (screenId === 'screen-attendees' && currentEvent) renderAttendees();
+            if (screenId === 'screen-expenses' && currentEvent) renderCategories();
+            if (screenId === 'screen-summary' && currentEvent) renderSummary();
         }
 
         function showModal(modalId) {
@@ -1435,42 +1442,53 @@
         async function createEvent(e) {
             e.preventDefault();
             
-            const name = document.getElementById('org-name').value.trim();
-            const phone = document.getElementById('org-phone').value.trim();
-            const city = document.getElementById('event-city').value.trim();
-            const date = document.getElementById('event-date').value;
-            const type = document.querySelector('.chip.selected')?.dataset.type || 'soltera';
-            
-            const code = generateCode();
-            
-            currentEvent = {
-                code: code,
-                organizer: { name, phone },
-                city: city,
-                date: date,
-                type: type,
-                attendees: [],
-                categories: [...DEFAULT_CATEGORIES],
-                expenses: [],
-                createdAt: new Date().toISOString()
-            };
-            
-            // Add organizer as first attendee
-            currentEvent.attendees.push({
-                id: Date.now().toString(),
-                name: name,
-                phone: phone,
-                isVIP: false,
-                paid: 0
-            });
-            
-            saveEvent();
-            
-            // Send webhook
-            sendWebhook();
-            
-            showScreen('screen-dashboard');
-            showToast('¡Despedida creada! Código: ' + code);
+            try {
+                const name = document.getElementById('org-name').value.trim();
+                const phone = document.getElementById('org-phone').value.trim();
+                const city = document.getElementById('event-city').value.trim();
+                const date = document.getElementById('event-date').value;
+                const type = document.querySelector('#form-create .chip.selected')?.dataset.type || 'soltera';
+                
+                if (!name || !phone || !city || !date) {
+                    showToast('Rellena todos los campos');
+                    return;
+                }
+                
+                const code = generateCode();
+                
+                currentEvent = {
+                    code: code,
+                    organizer: { name, phone },
+                    city: city,
+                    date: date,
+                    type: type,
+                    attendees: [],
+                    categories: JSON.parse(JSON.stringify(DEFAULT_CATEGORIES)),
+                    expenses: [],
+                    createdAt: new Date().toISOString()
+                };
+                
+                // Add organizer as first attendee
+                currentEvent.attendees.push({
+                    id: Date.now().toString(),
+                    name: name,
+                    phone: phone,
+                    isVIP: false,
+                    paid: 0
+                });
+                
+                saveEvent();
+                
+                // Send webhook (don't await, fire and forget)
+                sendWebhook();
+                
+                showScreen('screen-dashboard');
+                showToast('¡Despedida creada! Código: ' + code);
+                
+            } catch (error) {
+                console.error('Error creating event:', error);
+                showToast('Error al crear. Inténtalo de nuevo.');
+            }
         }
 
         async function sendWebhook() {
@@ -2181,16 +2199,31 @@
         // INIT
         // ============================================
         function init() {
-            // Check for saved event
-            const lastCode = localStorage.getItem('lastEventCode');
-            if (lastCode && loadEvent(lastCode)) {
-                showScreen('screen-dashboard');
-            }
-            
-            // Set min date for event
-            const dateInput = document.getElementById('event-date');
-            if (dateInput) {
-                dateInput.min = new Date().toISOString().split('T')[0];
+            try {
+                // Check for saved event
+                const lastCode = localStorage.getItem('lastEventCode');
+                if (lastCode) {
+                    const loaded = loadEvent(lastCode);
+                    if (loaded && currentEvent) {
+                        showScreen('screen-dashboard');
+                        return;
+                    }
+                }
+                
+                // Default: show home
+                showScreen('screen-home');
+                
+                // Set min date for event
+                const dateInput = document.getElementById('event-date');
+                if (dateInput) {
+                    dateInput.min = new Date().toISOString().split('T')[0];
+                }
+            } catch (error) {
+                console.error('Init error:', error);
+                // Clear corrupted data and show home
+                localStorage.removeItem('lastEventCode');
+                currentEvent = null;
+                showScreen('screen-home');
             }
         }
 
