@@ -1,4 +1,4 @@
-const CACHE_NAME = 'despedidas-v5';
+const CACHE_NAME = 'despedidas-v6';
 const ASSETS_TO_CACHE = ['/', '/index.html', '/manifest.json'];
 
 self.addEventListener('install', (event) => {

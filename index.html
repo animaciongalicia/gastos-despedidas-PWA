@@ -281,7 +281,15 @@
 
 "></div>
                 <div class="form-group"><label class="form-label">Teléfono</label><input type="tel" class="form-input" id="inp-att-phone" placeholder="678 123 456"></div>
-                <div class="toggle-group"><span>👑 Es el novio/a (NO paga)</span><div class="toggle" id="toggle-vip"></div></div>
+                <div class="form-group">
+                    <label class="form-label">Rol</label>
+                    <div class="chips" id="role-chips">
+                        <span class="chip selected" data-role="invitado">🎉 Invitado</span>
+                        <span class="chip" data-role="organizador">📋 Organizador</span>
+                        <span class="chip" data-role="protagonista">👑 Novio/Novia</span>
+                    </div>
+                    <p class="info-text">El novio/novia nunca paga</p>
+                </div>
                 <div class="form-group" id="paid-group" style="display:none">
                     <label class="form-label">Ya ha pagado (€)</label>
                     <input type="number" class="form-input" id="inp-att-paid" placeholder="0" step="0.01">
@@ -492,22 +500,33 @@ function renderAtt() {
     list.innerHTML = E.attendees.map(a => {
         const s = stats[a.id] || {owes:0,paid:0};
         const bal = s.paid - s.owes;
-        let badge = '';
-        if(a.vip) {
-            badge = '<span class="badge badge-vip">👑 NO PAGA</span>';
-        } else if(bal >= 0) {
-            badge = '<span class="badge badge-paid">✓ Pagado</span>';
-        } else if(s.paid > 0) {
-            badge = '<span class="badge badge-partial">Parcial</span>';
-        } else {
-            badge = '<span class="badge badge-pending">Pendiente</span>';
+        const role = a.role || (a.vip ? 'protagonista' : 'invitado');
+        
+        let roleBadge = '';
+        if(role === 'protagonista' || a.vip) {
+            roleBadge = '<span class="badge badge-vip">👑 NOVIO/A</span>';
+        } else if(role === 'organizador') {
+            roleBadge = '<span class="badge" style="background:#2196F3;color:white">📋 Organizador</span>';
         }
         
+        let statusBadge = '';
+        if(role !== 'protagonista' && !a.vip) {
+            if(bal >= 0) {
+                statusBadge = '<span class="badge badge-paid">✓ Pagado</span>';
+            } else if(s.paid > 0) {
+                statusBadge = '<span class="badge badge-partial">Parcial</span>';
+            } else {
+                statusBadge = '<span class="badge badge-pending">Pendiente</span>';
+            }
+        }
+        
+        const isVip = role === 'protagonista' || a.vip;
+        
         return `<div class="attendee-item" data-id="${a.id}">
-            <div class="attendee-avatar ${a.vip?'vip':''}">${a.name.substring(0,2).toUpperCase()}</div>
+            <div class="attendee-avatar ${isVip?'vip':''}">${a.name.substring(0,2).toUpperCase()}</div>
             <div class="attendee-info">
-                <div class="attendee-name">${a.name} ${badge}</div>
-                <div class="attendee-amount">${a.vip ? '👑 ¡El/La protagonista!' : `Debe: <strong>${Math.max(0,-bal).toFixed(0)}€</strong> · Pagado: ${s.paid.toFixed(0)}€`}</div>
+                <div class="attendee-name">${a.name} ${roleBadge} ${statusBadge}</div>
+                <div class="attendee-amount">${isVip ? '👑 ¡No paga - es el/la protagonista!' : `Debe: <strong>${Math.max(0,-bal).toFixed(0)}€</strong> · Pagado: ${s.paid.toFixed(0)}€`}</div>
             </div>
         </div>`;
     }).join('');
@@ -553,13 +572,20 @@ function renderSummary() {
     $('summary-persons').innerHTML = E.attendees.map(a => {
         const s = stats[a.id] || {owes:0,paid:0};
         const bal = s.paid - s.owes;
+        const role = a.role || (a.vip ? 'protagonista' : 'invitado');
+        const isVip = role === 'protagonista' || a.vip;
+        
+        let roleIcon = '';
+        if(isVip) roleIcon = '👑';
+        else if(role === 'organizador') roleIcon = '📋';
+        
         return `<div class="attendee-item" style="cursor:default">
-            <div class="attendee-avatar ${a.vip?'vip':''}">${a.name.substring(0,2).toUpperCase()}</div>
+            <div class="attendee-avatar ${isVip?'vip':''}">${a.name.substring(0,2).toUpperCase()}</div>
             <div class="attendee-info">
-                <div class="attendee-name">${a.name} ${a.vip?'👑':''}</div>
-                <div class="attendee-amount">${a.vip?'No paga':`Debe: ${s.owes.toFixed(0)}€ · Pagó: ${s.paid.toFixed(0)}€`}</div>
+                <div class="attendee-name">${a.name} ${roleIcon}</div>
+                <div class="attendee-amount">${isVip?'No paga - Protagonista':`Debe: ${s.owes.toFixed(0)}€ · Pagó: ${s.paid.toFixed(0)}€`}</div>
             </div>
-            ${!a.vip ? `<div style="font-weight:700;color:${bal>=0?'var(--success)':'var(--danger)'}">${bal>=0?'+':''}${bal.toFixed(0)}€</div>` : ''}
+            ${!isVip ? `<div style="font-weight:700;color:${bal>=0?'var(--success)':'var(--danger)'}">${bal>=0?'+':''}${bal.toFixed(0)}€</div>` : ''}
         </div>`;
     }).join('');
     
@@ -577,18 +603,25 @@ function openAttendeeModal(id = null) {
     $('att-danger').style.display = isEdit ? 'block' : 'none';
     $('paid-group').style.display = isEdit ? 'block' : 'none';
     
+    // Reset role chips
+    $$('#role-chips .chip').forEach(c => c.classList.remove('selected'));
+    
     if(isEdit) {
         const a = E.attendees.find(x => x.id === id);
         if(!a) return;
         $('inp-att-name').value = a.name;
         $('inp-att-phone').value = a.phone || '';
         $('inp-att-paid').value = a.paid || 0;
-        $('toggle-vip').classList.toggle('active', a.vip);
+        // Select the right role chip
+        const role = a.role || (a.vip ? 'protagonista' : 'invitado');
+        const roleChip = document.querySelector(`#role-chips .chip[data-role="${role}"]`);
+        if(roleChip) roleChip.classList.add('selected');
+        else $$('#role-chips .chip')[0].classList.add('selected');
     } else {
         $('inp-att-name').value = '';
         $('inp-att-phone').value = '';
         $('inp-att-paid').value = 0;
-        $('toggle-vip').classList.remove('active');
+        $$('#role-chips .chip')[0].classList.add('selected'); // Default: invitado
     }
     openModal('modal-attendee');
 }
@@ -597,13 +630,19 @@ function saveAttendee() {
     const id = $('edit-att-id').value;
     const name = $('inp-att-name').value.trim();
     const phone = $('inp-att-phone').value.trim();
-    const vip = $('toggle-vip').classList.contains('active');
+    const role = document.querySelector('#role-chips .chip.selected')?.dataset.role || 'invitado';
+    const vip = role === 'protagonista'; // Novio/novia no paga
     const paid = parseFloat($('inp-att-paid').value) || 0;
     
     if(!name) { toast('Pon un nombre'); return; }
     
-    // If setting as VIP, remove VIP from others first
-    if(vip) E.attendees.forEach(a => a.vip = false);
+    // If setting as protagonista, remove that role from others
+    if(vip) {
+        E.attendees.forEach(a => {
+            if(a.role === 'protagonista') a.role = 'invitado';
+            a.vip = false;
+        });
+    }
     
     if(id) {
         // Edit existing
@@ -611,13 +650,14 @@ function saveAttendee() {
         if(a) {
             a.name = name;
             a.phone = phone;
+            a.role = role;
             a.vip = vip;
             a.paid = paid;
         }
         toast('Asistente actualizado');
     } else {
         // Add new
-        E.attendees.push({id: Date.now().toString(), name, phone, vip, paid: 0});
+        E.attendees.push({id: Date.now().toString(), name, phone, role, vip, paid: 0});
         toast('Asistente añadido');
     }
     
@@ -673,6 +713,7 @@ async function addFromContacts() {
                         id: Date.now().toString() + Math.random(),
                         name: name,
                         phone: phone,
+                        role: 'invitado',
                         vip: false,
                         paid: 0
                     });
@@ -801,7 +842,7 @@ function createEvent() {
     E = {
         code, city, date, type,
         organizer: {name, phone},
-        attendees: [{id: Date.now().toString(), name, phone, vip: false, paid: 0}],
+        attendees: [{id: Date.now().toString(), name, phone, role: 'organizador', vip: false, paid: 0}],
         categories: JSON.parse(JSON.stringify(DEFAULT_CATS)),
         expenses: [],
         createdAt: new Date().toISOString()
@@ -857,11 +898,16 @@ function genWhatsAppMsg() {
     });
     m += `\n👤 *CADA UNO DEBE:*\n`;
     E.attendees.forEach(a => {
-        if(a.vip) { m += `👑 ${a.name}: ¡NO PAGA!\n`; }
-        else {
+        const role = a.role || (a.vip ? 'protagonista' : 'invitado');
+        const isVip = role === 'protagonista' || a.vip;
+        
+        if(isVip) { 
+            m += `👑 ${a.name}: ¡NO PAGA - PROTAGONISTA!\n`; 
+        } else {
             const s = stats[a.id] || {owes:0,paid:0};
             const bal = s.paid - s.owes;
-            m += `${bal>=0?'✅':'⏳'} ${a.name}: ${Math.max(0,-bal).toFixed(0)}€\n`;
+            const roleIcon = role === 'organizador' ? '📋 ' : '';
+            m += `${bal>=0?'✅':'⏳'} ${roleIcon}${a.name}: ${Math.max(0,-bal).toFixed(0)}€\n`;
         }
     });
     m += `\n💳 Bizum: ${E.organizer.phone}\n📱 Código: ${E.code}`;
@@ -909,7 +955,16 @@ function exportPDF() {
     E.attendees.forEach(a => {
         const s = stats[a.id] || {owes:0,paid:0};
         const bal = s.paid - s.owes;
-        const txt = a.vip ? `${a.name}: 👑 NO PAGA (protagonista)` : `${a.name}: Debe ${s.owes.toFixed(0)}€, Pagó ${s.paid.toFixed(0)}€, Saldo ${bal>=0?'+':''}${bal.toFixed(0)}€`;
+        const role = a.role || (a.vip ? 'protagonista' : 'invitado');
+        const isVip = role === 'protagonista' || a.vip;
+        
+        let roleLabel = '';
+        if(isVip) roleLabel = ' [NOVIO/A - NO PAGA]';
+        else if(role === 'organizador') roleLabel = ' [Organizador]';
+        
+        const txt = isVip 
+            ? `${a.name}${roleLabel}` 
+            : `${a.name}${roleLabel}: Debe ${s.owes.toFixed(0)}€, Pagó ${s.paid.toFixed(0)}€, Saldo ${bal>=0?'+':''}${bal.toFixed(0)}€`;
         doc.text(txt, 25, y);
         y += 6;
         if(y > 270) { doc.addPage(); y = 20; }
@@ -987,8 +1042,11 @@ document.addEventListener('DOMContentLoaded', function() {
     $$('.modal-close').forEach(btn => btn.onclick = () => closeModal(btn.dataset.close));
     $$('.modal-overlay').forEach(m => m.onclick = e => { if(e.target === m) closeModal(m.id); });
     
-    // Toggles
-    $('toggle-vip').onclick = function() { this.classList.toggle('active'); };
+    // Chips - roles
+    $$('#role-chips .chip').forEach(c => c.onclick = function() {
+        $$('#role-chips .chip').forEach(x => x.classList.remove('selected'));
+        this.classList.add('selected');
+    });
     
     // Chips - type
     $$('#type-chips .chip').forEach(c => c.onclick = function() {
