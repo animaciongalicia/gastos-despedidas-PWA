@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
-import {
-  Users,
-  Calculator,
-  CreditCard,
-  Share2,
-  Settings,
-  Plus,
-  Trash2,
-  CheckCircle2,
+import { 
+  Users, 
+  Calculator, 
+  CreditCard, 
+  Share2, 
+  Settings, 
+  Plus, 
+  Trash2, 
+  CheckCircle2, 
   Circle,
   AlertCircle,
   Copy,
@@ -31,14 +31,9 @@ import {
   Eye,
   Wallet,
   RotateCcw,
-  ArrowLeft,
-  Calendar,
-  Clock,
-  DollarSign,
-  Edit,
-  Send
+  ArrowLeft
 } from 'lucide-react';
-import { Attendee, Config, Expense, PaymentStatus, Reservation } from './types';
+import { Attendee, Config, Expense, PaymentStatus } from './types';
 import { DEFAULT_CONFIG, DEFAULT_EXPENSES, generateInitialAttendees } from './constants';
 
 // --- Constants for Contextual Upselling ---
@@ -361,31 +356,25 @@ const LandingSolutions: React.FC<{ onStart: () => void }> = ({ onStart }) => (
 
 export default function App() {
   const [view, setView] = useState<'intro' | 'solutions' | 'app'>('intro');
-  const [activeTab, setActiveTab] = useState<'config' | 'expenses' | 'attendees' | 'summary' | 'agency' | 'tips' | 'calendar'>('config');
-
+  const [activeTab, setActiveTab] = useState<'config' | 'expenses' | 'attendees' | 'summary' | 'agency' | 'tips'>('config');
+  
   // State
   const [config, setConfig] = useState<Config>(DEFAULT_CONFIG);
   const [expenses, setExpenses] = useState<Expense[]>(DEFAULT_EXPENSES);
   const [attendees, setAttendees] = useState<Attendee[]>(() => generateInitialAttendees(DEFAULT_CONFIG.totalPeople));
   const [shareUrl, setShareUrl] = useState<string>('');
-
+  
   // New States
   const [isReadOnly, setIsReadOnly] = useState(false);
   const [showImportModal, setShowImportModal] = useState(false);
   const [importText, setImportText] = useState('');
   const [showReport, setShowReport] = useState(false); // To toggle the report view
 
-  // Calendar/Reservations State
-  const [reservations, setReservations] = useState<Reservation[]>([]);
-  const [showReservationModal, setShowReservationModal] = useState(false);
-  const [editingReservation, setEditingReservation] = useState<Reservation | null>(null);
-  const [selectedMonth, setSelectedMonth] = useState<number>(new Date().getMonth()); // 0-11
-
   // --- Initialization & Local Storage ---
-
+  
   useEffect(() => {
     const hash = window.location.hash.slice(1);
-
+    
     // Check for Read Only Mode
     const urlParams = new URLSearchParams(window.location.search);
     if (urlParams.get('mode') === 'view') {
@@ -398,16 +387,7 @@ export default function App() {
         if (data.config) setConfig(data.config);
         if (data.expenses) setExpenses(data.expenses);
         if (data.attendees) setAttendees(data.attendees);
-        if (data.reservations) {
-          // Parse dates from JSON
-          const parsedReservations = data.reservations.map((r: any) => ({
-            ...r,
-            fecha: new Date(r.fecha),
-            createdAt: new Date(r.createdAt)
-          }));
-          setReservations(parsedReservations);
-        }
-        setView('app');
+        setView('app'); 
         return;
       }
     }
@@ -420,14 +400,6 @@ export default function App() {
          if (data.config) setConfig(data.config);
          if (data.expenses) setExpenses(data.expenses);
          if (data.attendees) setAttendees(data.attendees);
-         if (data.reservations) {
-           const parsedReservations = data.reservations.map((r: any) => ({
-             ...r,
-             fecha: new Date(r.fecha),
-             createdAt: new Date(r.createdAt)
-           }));
-           setReservations(parsedReservations);
-         }
          setView('app');
        } catch (e) {
          console.error("Error loading local storage", e);
@@ -438,10 +410,10 @@ export default function App() {
   // Save to Local Storage on change
   useEffect(() => {
     if (!isReadOnly && view === 'app') {
-      const stateToSave = { config, expenses, attendees, reservations };
+      const stateToSave = { config, expenses, attendees };
       localStorage.setItem('despedidas_pro_state', JSON.stringify(stateToSave));
     }
-  }, [config, expenses, attendees, reservations, isReadOnly, view]);
+  }, [config, expenses, attendees, isReadOnly, view]);
 
 
   // --- Effects for Syncing Data ---
@@ -672,14 +644,13 @@ export default function App() {
       setConfig({...DEFAULT_CONFIG});
       setExpenses(JSON.parse(JSON.stringify(DEFAULT_EXPENSES)));
       setAttendees(generateInitialAttendees(DEFAULT_CONFIG.totalPeople));
-      setReservations([]);
-
+      
       setView('intro');
       setShareUrl('');
-
+      
       // Clear URL
       window.history.pushState(null, document.title, window.location.pathname + window.location.search);
-
+      
       // Force scroll top
       window.scrollTo(0,0);
     }
@@ -740,14 +711,14 @@ export default function App() {
   // --- Sharing Handlers ---
 
   const generateShareUrl = (readOnlyMode = false) => {
-    const data = { config, expenses, attendees, reservations };
+    const data = { config, expenses, attendees };
     const hash = encodeState(data);
     let url = `${window.location.origin}${window.location.pathname}`;
     if (readOnlyMode) {
       url += `?mode=view`;
     }
     url += `#${hash}`;
-    if (!readOnlyMode) window.location.hash = hash;
+    if (!readOnlyMode) window.location.hash = hash; 
     return url;
   };
 
@@ -771,92 +742,6 @@ export default function App() {
 
   const handleOpenReport = () => {
     setShowReport(true);
-  };
-
-  // --- Calendar/Reservation Handlers ---
-
-  const getSaturdaysInRange = (year: number, startMonth: number, endMonth: number) => {
-    const saturdays: Date[] = [];
-
-    for (let month = startMonth; month <= endMonth; month++) {
-      const daysInMonth = new Date(year, month + 1, 0).getDate();
-
-      for (let day = 1; day <= daysInMonth; day++) {
-        const date = new Date(year, month, day);
-        if (date.getDay() === 6) { // Saturday
-          saturdays.push(date);
-        }
-      }
-    }
-
-    return saturdays;
-  };
-
-  const getSeasonSaturdays = () => {
-    const currentYear = new Date().getFullYear();
-    // April (3) to September (8) - 0-indexed
-    return getSaturdaysInRange(currentYear, 3, 8);
-  };
-
-  const getReservationForDate = (date: Date) => {
-    return reservations.find(r =>
-      r.fecha.getFullYear() === date.getFullYear() &&
-      r.fecha.getMonth() === date.getMonth() &&
-      r.fecha.getDate() === date.getDate()
-    );
-  };
-
-  const addOrUpdateReservation = (reservation: Reservation) => {
-    const existingIndex = reservations.findIndex(r => r.id === reservation.id);
-    if (existingIndex >= 0) {
-      const updated = [...reservations];
-      updated[existingIndex] = reservation;
-      setReservations(updated);
-    } else {
-      setReservations([...reservations, reservation]);
-    }
-  };
-
-  const deleteReservation = (id: string) => {
-    if (window.confirm('¿Seguro que quieres eliminar esta reserva?')) {
-      setReservations(reservations.filter(r => r.id !== id));
-    }
-  };
-
-  const generateWhatsAppMessageForGroup = (reservation: Reservation) => {
-    const pendiente = reservation.precioTotal - reservation.pagado;
-    const fecha = reservation.fecha.toLocaleDateString('es-ES', {
-      weekday: 'long',
-      day: 'numeric',
-      month: 'long'
-    });
-
-    let msg = `🎉 *RECORDATORIO CENA GRUPO* 🎉\n\n`;
-    msg += `👥 *Grupo:* ${reservation.nombreGrupo}\n`;
-    msg += `📅 *Fecha:* ${fecha}\n`;
-    msg += `🏠 *Local:* ${reservation.local}\n`;
-    msg += `👨‍👩‍👧‍👦 *Asistentes:* ${reservation.asistentes} personas\n\n`;
-    msg += `------------------\n`;
-    msg += `💰 *ESTADO DE PAGO*\n`;
-    msg += `Total reserva: ${reservation.precioTotal.toFixed(2)}€\n`;
-    msg += `Pagado: ${reservation.pagado.toFixed(2)}€\n`;
-
-    if (pendiente > 0) {
-      msg += `❗ *PENDIENTE: ${pendiente.toFixed(2)}€*\n\n`;
-      msg += `Por favor, realizar el pago antes del viernes para confirmar la reserva.\n`;
-    } else {
-      msg += `✅ *PAGADO COMPLETO*\n\n`;
-      msg += `¡Todo listo para el sábado!\n`;
-    }
-
-    msg += `\n------------------\n`;
-    msg += `📞 Cualquier duda, contactar a ${reservation.contacto}\n`;
-
-    if (reservation.notas) {
-      msg += `\n📝 *Notas:* ${reservation.notas}`;
-    }
-
-    return msg;
   };
 
   // --- Views ---
@@ -1443,7 +1328,7 @@ export default function App() {
           <HelpCircle className="w-6 h-6 text-blue-600" />
           Guía de Supervivencia y Juegos
         </h2>
-
+        
         <div className="space-y-8 divide-y divide-gray-100">
           <section className="pt-4 first:pt-0">
             <h3 className="font-bold text-lg text-gray-900 mb-3 flex items-center gap-2">💰 Reglas de Oro del Dinero</h3>
@@ -1462,7 +1347,7 @@ export default function App() {
               </li>
             </ul>
           </section>
-
+          
           <section className="pt-6">
             <h3 className="font-bold text-lg text-gray-900 mb-3 flex items-center gap-2">🎲 Juegos para romper el hielo</h3>
             <div className="grid md:grid-cols-2 gap-4">
@@ -1491,7 +1376,7 @@ export default function App() {
           <section className="pt-6">
             <h3 className="font-bold text-lg text-gray-900 mb-3 flex items-center gap-2">🚌 Logística y Transporte</h3>
             <p className="text-gray-600">
-              Si vais a beber, <strong>olvidad los coches</strong>. En Galicia el transporte público nocturno es limitado.
+              Si vais a beber, <strong>olvidad los coches</strong>. En Galicia el transporte público nocturno es limitado. 
               Lo mejor es contratar un microbús privado si sois más de 10, o tener los números de taxi locales guardados ANTES de salir.
               Uber/Cabify solo funcionan en las ciudades grandes (Coruña, Vigo).
             </p>
@@ -1500,346 +1385,6 @@ export default function App() {
       </div>
     </div>
   );
-
-  const renderCalendar = () => {
-    const saturdays = getSeasonSaturdays();
-    const monthNames = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
-    const availableMonths = [3, 4, 5, 6, 7, 8]; // April to September
-
-    const filteredSaturdays = saturdays.filter(d => d.getMonth() === selectedMonth);
-
-    const ReservationModal = () => {
-      const [formData, setFormData] = useState<Partial<Reservation>>(
-        editingReservation || {
-          nombreGrupo: '',
-          local: 'Despedidas',
-          asistentes: 0,
-          precioTotal: 0,
-          pagado: 0,
-          contacto: '',
-          notas: '',
-          status: 'PENDING'
-        }
-      );
-
-      const handleSave = () => {
-        if (!formData.nombreGrupo || !formData.contacto || formData.asistentes === 0) {
-          alert('Por favor, rellena los campos obligatorios: Nombre del grupo, Contacto y Asistentes');
-          return;
-        }
-
-        const reservation: Reservation = {
-          id: editingReservation?.id || `res_${Date.now()}`,
-          fecha: editingReservation?.fecha || new Date(),
-          nombreGrupo: formData.nombreGrupo!,
-          local: formData.local || 'Despedidas',
-          asistentes: formData.asistentes!,
-          precioTotal: formData.precioTotal || 0,
-          pagado: formData.pagado || 0,
-          contacto: formData.contacto!,
-          notas: formData.notas,
-          status: formData.status || 'PENDING',
-          createdAt: editingReservation?.createdAt || new Date()
-        };
-
-        addOrUpdateReservation(reservation);
-        setShowReservationModal(false);
-        setEditingReservation(null);
-      };
-
-      return (
-        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 overflow-y-auto">
-          <div className="bg-white rounded-xl shadow-xl max-w-2xl w-full p-6 space-y-4 my-8">
-            <div className="flex justify-between items-center">
-              <h3 className="text-xl font-bold text-gray-900">
-                {editingReservation ? 'Editar Reserva' : 'Nueva Reserva'}
-              </h3>
-              <button onClick={() => {
-                setShowReservationModal(false);
-                setEditingReservation(null);
-              }}>
-                <XCircle className="w-6 h-6 text-gray-400 hover:text-gray-600" />
-              </button>
-            </div>
-
-            <div className="grid md:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <label className="block text-sm font-medium text-gray-700">Nombre del Grupo *</label>
-                <input
-                  type="text"
-                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                  placeholder="Ej: Grupo Ana"
-                  value={formData.nombreGrupo}
-                  onChange={(e) => setFormData({ ...formData, nombreGrupo: e.target.value })}
-                />
-              </div>
-
-              <div className="space-y-2">
-                <label className="block text-sm font-medium text-gray-700">Local</label>
-                <input
-                  type="text"
-                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                  value={formData.local}
-                  onChange={(e) => setFormData({ ...formData, local: e.target.value })}
-                />
-              </div>
-
-              <div className="space-y-2">
-                <label className="block text-sm font-medium text-gray-700">Asistentes *</label>
-                <input
-                  type="number"
-                  min="1"
-                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                  value={formData.asistentes || ''}
-                  onChange={(e) => setFormData({ ...formData, asistentes: parseInt(e.target.value) || 0 })}
-                />
-              </div>
-
-              <div className="space-y-2">
-                <label className="block text-sm font-medium text-gray-700">Contacto (WhatsApp) *</label>
-                <input
-                  type="tel"
-                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                  placeholder="678288284"
-                  value={formData.contacto}
-                  onChange={(e) => setFormData({ ...formData, contacto: e.target.value })}
-                />
-              </div>
-
-              <div className="space-y-2">
-                <label className="block text-sm font-medium text-gray-700">Precio Total (€)</label>
-                <input
-                  type="number"
-                  min="0"
-                  step="0.01"
-                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                  value={formData.precioTotal || ''}
-                  onChange={(e) => setFormData({ ...formData, precioTotal: parseFloat(e.target.value) || 0 })}
-                />
-              </div>
-
-              <div className="space-y-2">
-                <label className="block text-sm font-medium text-gray-700">Pagado (€)</label>
-                <input
-                  type="number"
-                  min="0"
-                  step="0.01"
-                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                  value={formData.pagado || ''}
-                  onChange={(e) => setFormData({ ...formData, pagado: parseFloat(e.target.value) || 0 })}
-                />
-              </div>
-
-              <div className="space-y-2">
-                <label className="block text-sm font-medium text-gray-700">Estado</label>
-                <select
-                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                  value={formData.status}
-                  onChange={(e) => setFormData({ ...formData, status: e.target.value as any })}
-                >
-                  <option value="PENDING">Pendiente</option>
-                  <option value="CONFIRMED">Confirmada</option>
-                  <option value="CANCELLED">Cancelada</option>
-                </select>
-              </div>
-
-              <div className="space-y-2 md:col-span-2">
-                <label className="block text-sm font-medium text-gray-700">Notas</label>
-                <textarea
-                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                  rows={3}
-                  placeholder="Información adicional, alergias, etc."
-                  value={formData.notas || ''}
-                  onChange={(e) => setFormData({ ...formData, notas: e.target.value })}
-                />
-              </div>
-            </div>
-
-            <div className="flex justify-end gap-3 pt-4 border-t">
-              <button
-                onClick={() => {
-                  setShowReservationModal(false);
-                  setEditingReservation(null);
-                }}
-                className="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
-              >
-                Cancelar
-              </button>
-              <button
-                onClick={handleSave}
-                className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
-              >
-                {editingReservation ? 'Guardar Cambios' : 'Crear Reserva'}
-              </button>
-            </div>
-          </div>
-        </div>
-      );
-    };
-
-    return (
-      <div className="max-w-6xl mx-auto space-y-6">
-        <ProTip>
-          <strong>Gestión de Reservas:</strong> Controla las reservas de tus grupos de cenas. Marca los pagos y genera mensajes de WhatsApp automáticamente para enviar los viernes.
-        </ProTip>
-
-        {/* Month Filter */}
-        <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-200 flex flex-wrap items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <Calendar className="w-5 h-5 text-blue-600" />
-            <h2 className="text-lg font-bold text-gray-800">Calendario de Reservas 2026</h2>
-          </div>
-          <div className="flex items-center gap-2">
-            <label className="text-sm font-medium text-gray-700">Mes:</label>
-            <select
-              className="p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-              value={selectedMonth}
-              onChange={(e) => setSelectedMonth(parseInt(e.target.value))}
-            >
-              {availableMonths.map(m => (
-                <option key={m} value={m}>{monthNames[m]}</option>
-              ))}
-            </select>
-          </div>
-        </div>
-
-        {/* Calendar Grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {filteredSaturdays.map(saturday => {
-            const reservation = getReservationForDate(saturday);
-            const pendiente = reservation ? reservation.precioTotal - reservation.pagado : 0;
-
-            return (
-              <div
-                key={saturday.toISOString()}
-                className={`bg-white rounded-xl shadow-sm border-2 transition-all hover:shadow-md ${
-                  reservation
-                    ? reservation.status === 'CONFIRMED'
-                      ? 'border-green-300 bg-green-50'
-                      : reservation.status === 'CANCELLED'
-                      ? 'border-red-300 bg-red-50'
-                      : 'border-yellow-300 bg-yellow-50'
-                    : 'border-gray-200'
-                }`}
-              >
-                <div className="p-4 space-y-3">
-                  {/* Date Header */}
-                  <div className="flex items-center justify-between pb-3 border-b border-gray-200">
-                    <div>
-                      <p className="text-2xl font-bold text-gray-900">
-                        {saturday.getDate()}
-                      </p>
-                      <p className="text-xs text-gray-500 uppercase">
-                        {saturday.toLocaleDateString('es-ES', { weekday: 'long', month: 'short' })}
-                      </p>
-                    </div>
-                    {!reservation && (
-                      <button
-                        onClick={() => {
-                          setEditingReservation({
-                            id: `res_${Date.now()}`,
-                            fecha: saturday,
-                            nombreGrupo: '',
-                            local: 'Despedidas',
-                            asistentes: 0,
-                            precioTotal: 0,
-                            pagado: 0,
-                            contacto: '',
-                            status: 'PENDING',
-                            createdAt: new Date()
-                          });
-                          setShowReservationModal(true);
-                        }}
-                        className="text-blue-600 hover:text-blue-700 p-2 rounded-lg hover:bg-blue-50 transition-colors"
-                        title="Añadir reserva"
-                      >
-                        <Plus className="w-5 h-5" />
-                      </button>
-                    )}
-                  </div>
-
-                  {/* Reservation Details */}
-                  {reservation ? (
-                    <div className="space-y-2">
-                      <div className="flex items-start justify-between">
-                        <div className="flex-1">
-                          <p className="font-bold text-gray-900">{reservation.nombreGrupo}</p>
-                          <p className="text-xs text-gray-600">{reservation.local}</p>
-                        </div>
-                        <div className="flex gap-1">
-                          <button
-                            onClick={() => {
-                              setEditingReservation(reservation);
-                              setShowReservationModal(true);
-                            }}
-                            className="text-gray-400 hover:text-blue-600 p-1"
-                            title="Editar"
-                          >
-                            <Edit className="w-4 h-4" />
-                          </button>
-                          <button
-                            onClick={() => deleteReservation(reservation.id)}
-                            className="text-gray-400 hover:text-red-600 p-1"
-                            title="Eliminar"
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </button>
-                        </div>
-                      </div>
-
-                      <div className="space-y-1 text-sm">
-                        <div className="flex items-center gap-2 text-gray-700">
-                          <Users className="w-4 h-4" />
-                          <span>{reservation.asistentes} personas</span>
-                        </div>
-                        <div className="flex items-center gap-2 text-gray-700">
-                          <DollarSign className="w-4 h-4" />
-                          <span>Total: {reservation.precioTotal.toFixed(2)}€</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          {pendiente > 0 ? (
-                            <span className="text-red-600 font-bold">Pendiente: {pendiente.toFixed(2)}€</span>
-                          ) : (
-                            <span className="text-green-600 font-bold flex items-center gap-1">
-                              <CheckCircle2 className="w-4 h-4" /> Pagado
-                            </span>
-                          )}
-                        </div>
-                      </div>
-
-                      <button
-                        onClick={() => {
-                          const msg = generateWhatsAppMessageForGroup(reservation);
-                          const url = `https://wa.me/${reservation.contacto.replace(/\D/g, '')}?text=${encodeURIComponent(msg)}`;
-                          window.open(url, '_blank');
-                        }}
-                        className="w-full mt-2 bg-green-500 hover:bg-green-600 text-white py-2 px-3 rounded-lg text-sm font-medium flex items-center justify-center gap-2 transition-colors"
-                      >
-                        <Send className="w-4 h-4" />
-                        Enviar WhatsApp
-                      </button>
-                    </div>
-                  ) : (
-                    <div className="text-center py-4 text-gray-400 text-sm">
-                      Sin reserva
-                    </div>
-                  )}
-                </div>
-              </div>
-            );
-          })}
-        </div>
-
-        {filteredSaturdays.length === 0 && (
-          <div className="text-center py-12 text-gray-400">
-            No hay sábados en este mes dentro de la temporada (Abril - Septiembre)
-          </div>
-        )}
-
-        {showReservationModal && <ReservationModal />}
-      </div>
-    );
-  };
 
   return (
     <div className="min-h-screen bg-gray-50 pb-20">
@@ -1901,47 +1446,41 @@ export default function App() {
         {/* Navigation Tabs */}
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 overflow-x-auto">
           <nav className="flex space-x-1" aria-label="Tabs">
-            <TabButton
-              active={activeTab === 'config'}
-              onClick={() => setActiveTab('config')}
-              icon={<Settings className="w-4 h-4" />}
-              label="Configuración"
+            <TabButton 
+              active={activeTab === 'config'} 
+              onClick={() => setActiveTab('config')} 
+              icon={<Settings className="w-4 h-4" />} 
+              label="Configuración" 
             />
-            <TabButton
-              active={activeTab === 'expenses'}
-              onClick={() => setActiveTab('expenses')}
-              icon={<CreditCard className="w-4 h-4" />}
-              label="Gastos"
+            <TabButton 
+              active={activeTab === 'expenses'} 
+              onClick={() => setActiveTab('expenses')} 
+              icon={<CreditCard className="w-4 h-4" />} 
+              label="Gastos" 
             />
-            <TabButton
-              active={activeTab === 'attendees'}
-              onClick={() => setActiveTab('attendees')}
-              icon={<Users className="w-4 h-4" />}
-              label="Asistentes"
+            <TabButton 
+              active={activeTab === 'attendees'} 
+              onClick={() => setActiveTab('attendees')} 
+              icon={<Users className="w-4 h-4" />} 
+              label="Asistentes" 
             />
-            <TabButton
-              active={activeTab === 'summary'}
-              onClick={() => setActiveTab('summary')}
-              icon={<Wallet className="w-4 h-4" />}
-              label="Resumen"
+            <TabButton 
+              active={activeTab === 'summary'} 
+              onClick={() => setActiveTab('summary')} 
+              icon={<Wallet className="w-4 h-4" />} 
+              label="Resumen" 
             />
-            <TabButton
-              active={activeTab === 'calendar'}
-              onClick={() => setActiveTab('calendar')}
-              icon={<Calendar className="w-4 h-4" />}
-              label="Calendario"
+             <TabButton 
+              active={activeTab === 'agency'} 
+              onClick={() => setActiveTab('agency')} 
+              icon={<Building2 className="w-4 h-4" />} 
+              label="Agencia" 
             />
-            <TabButton
-              active={activeTab === 'agency'}
-              onClick={() => setActiveTab('agency')}
-              icon={<Building2 className="w-4 h-4" />}
-              label="Agencia"
-            />
-            <TabButton
-              active={activeTab === 'tips'}
-              onClick={() => setActiveTab('tips')}
-              icon={<HelpCircle className="w-4 h-4" />}
-              label="Guía"
+            <TabButton 
+              active={activeTab === 'tips'} 
+              onClick={() => setActiveTab('tips')} 
+              icon={<HelpCircle className="w-4 h-4" />} 
+              label="Guía" 
             />
           </nav>
         </div>
@@ -1953,7 +1492,6 @@ export default function App() {
         {activeTab === 'expenses' && renderExpenses()}
         {activeTab === 'attendees' && renderAttendees()}
         {activeTab === 'summary' && renderSummary()}
-        {activeTab === 'calendar' && renderCalendar()}
         {activeTab === 'agency' && renderAgency()}
         {activeTab === 'tips' && renderTips()}
       </main>

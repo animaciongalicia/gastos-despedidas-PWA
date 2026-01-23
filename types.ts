@@ -34,26 +34,9 @@ export interface CalculationResult {
   unexpectedTotal: number;
   totalTripCost: number;
   pricePerPayer: number; // Base average (approx)
-
+  
   // Specifics
   attendeeCosts: Record<string, number>; // Consumed cost (what they SHOULD pay)
   attendeePaid: Record<string, number>; // Out of pocket cost (what they ALREADY paid)
   attendeeBalance: Record<string, number>; // Net balance (negative = owes, positive = receives)
-}
-
-// Calendar Reservation System Types
-export type ReservationStatus = 'PENDING' | 'CONFIRMED' | 'CANCELLED';
-
-export interface Reservation {
-  id: string;
-  fecha: Date; // Saturday date
-  nombreGrupo: string;
-  local: string; // Restaurant/venue name
-  asistentes: number;
-  precioTotal: number;
-  pagado: number;
-  contacto: string; // Phone number for WhatsApp
-  notas?: string;
-  status: ReservationStatus;
-  createdAt: Date;
 }
