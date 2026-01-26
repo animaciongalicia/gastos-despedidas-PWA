@@ -6,7 +6,7 @@
     <meta name="theme-color" content="#E91E63">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>Gestor Gastos y Pagos de Despedidas | despedidasgalicia.es</title>
+    <title>Gestor de Despedidas | despedidasgalicia.es</title>
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon-192.png">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -148,10 +148,10 @@
             <div class="card mb-20">
                 <div class="card-title">💡 ¿Para qué sirve esto?</div>
                 <div style="font-size:14px;line-height:1.6;color:var(--text-muted)">
-                    <p style="margin-bottom:10px">✅ <strong>Conserva amistades</strong> — Que el dinero no rompa la fiesta</p>
-                    <p style="margin-bottom:10px">✅ <strong>Adiós al caos</strong> — Ni excels, ni gaitas "¿quién pagó qué?"</p>
-                    <p style="margin-bottom:10px">✅ <strong>El prota no paga</strong> — Se divide todo entre los demás</p>
-                    <p style="margin-bottom:10px">✅ <strong>Cada uno lo suyo</strong> — Si no se va a algo, no se paga</p>
+                    <p style="margin-bottom:10px">✅ <strong>Conserva amistades</strong> — Que el dinero no estropee la fiesta</p>
+                    <p style="margin-bottom:10px">✅ <strong>Adiós al caos</strong> — Nada de excels, capturas y "¿quién pagó qué?"</p>
+                    <p style="margin-bottom:10px">✅ <strong>El prota no paga</strong> — Se divide automáticamente entre los demás</p>
+                    <p style="margin-bottom:10px">✅ <strong>Cada uno lo suyo</strong> — Si alguien no va a una actividad, no paga</p>
                     <p>✅ <strong>Comparte fácil</strong> — PDF y WhatsApp con un click</p>
                 </div>
             </div>
@@ -159,8 +159,9 @@
             <button class="btn btn-primary mb-20" id="btn-create">🎉 Crear nueva despedida</button>
             <div class="divider">o</div>
             <button class="btn btn-secondary" id="btn-recover">🔑 Tengo un código</button>
-            <p class="text-center text-muted mt-20" style="font-size:12px">📞 678 288 284 · www.despedidasgalicia.es</p>
-            <p class="text-center mt-20" style="font-size:11px;color:var(--text-muted);font-style:italic">"Boas festas e mellores resacas" 🍻</p>
+            <p class="text-center text-muted mt-20" style="font-size:12px">📞 678 288 284 · despedidasgalicia.es</p>
+            <p class="text-center mt-20" style="font-size:12px"><a href="#" id="btn-info-datos" style="color:var(--text-muted);text-decoration:none">ℹ️ ¿Cómo se guardan mis datos?</a></p>
+            <p class="text-center" style="font-size:11px;color:var(--text-muted);font-style:italic;margin-top:8px">"Boas badaladas e mellor resaca" 🍻</p>
         </div>
 
         <!-- CREATE -->
@@ -178,7 +179,7 @@
             </div>
             <div class="form-group">
                 <label class="form-label">Ciudad del evento *</label>
-                <input type="text" class="form-input" id="inp-city" placeholder="A Coruña, Vigo, Sanxenxo...">
+                <input type="text" class="form-input" id="inp-city" placeholder="A Coruña, Vigo, Santiago...">
             </div>
             <div class="form-group">
                 <label class="form-label">Fecha del evento *</label>
@@ -297,8 +298,8 @@
                 <div class="form-group">
                     <label class="form-label">Rol</label>
                     <div class="chips" id="role-chips">
-                        <span class="chip selected" data-role="invitado">🎉 Invitado/a</span>
-                        <span class="chip" data-role="organizador">📋 Organizador/a</span>
+                        <span class="chip selected" data-role="invitado">🎉 Invitado</span>
+                        <span class="chip" data-role="organizador">📋 Organizador</span>
                         <span class="chip" data-role="protagonista">👑 Novio/Novia</span>
                     </div>
                     <p class="info-text">El novio/novia nunca paga</p>
@@ -365,6 +366,41 @@
                 <div class="modal-header"><span class="modal-title">Mensaje</span><button class="modal-close" data-close="modal-whatsapp">✕</button></div>
                 <div class="whatsapp-preview" id="wa-preview"></div>
                 <div style="display:flex;gap:10px;margin-top:20px"><button class="btn btn-secondary" style="flex:1" id="btn-copy-wa">📋 Copiar</button><button class="btn btn-primary" style="flex:1" id="btn-send-wa">💬 Enviar</button></div>
+            </div>
+        </div>
+
+        <!-- MODAL INFO DATOS -->
+        <div class="modal-overlay" id="modal-info-datos">
+            <div class="modal">
+                <div class="modal-header"><span class="modal-title">📱 Tus datos se guardan aquí</span><button class="modal-close" data-close="modal-info-datos">✕</button></div>
+                <div style="font-size:14px;line-height:1.7;color:var(--text)">
+                    <p style="margin-bottom:16px">Esta app guarda todo <strong>en tu navegador</strong>, no en la nube. Simple y privado.</p>
+                    
+                    <p style="margin-bottom:8px"><strong>✅ Para que no se pierdan:</strong></p>
+                    <p style="margin-bottom:6px;padding-left:8px">• Usa siempre el mismo navegador y dispositivo</p>
+                    <p style="margin-bottom:6px;padding-left:8px">• Guarda tu código (DESP-XXXXX) en las notas del móvil</p>
+                    <p style="margin-bottom:16px;padding-left:8px">• Evita el modo incógnito</p>
+                    
+                    <div style="background:var(--bg);padding:12px;border-radius:8px;margin-bottom:16px">
+                        <p style="margin:0"><strong>💡 Consejo:</strong> Exporta el resumen a PDF de vez en cuando. Así tienes copia de seguridad.</p>
+                    </div>
+                </div>
+                <button class="btn btn-primary" id="btn-close-info-datos">Entendido 👍</button>
+            </div>
+        </div>
+
+        <!-- MODAL DESPEDIDA CREADA -->
+        <div class="modal-overlay" id="modal-creada">
+            <div class="modal" style="text-align:center">
+                <div style="font-size:48px;margin-bottom:16px">🎉</div>
+                <h2 style="font-size:22px;margin-bottom:8px">¡Despedida creada!</h2>
+                <p style="color:var(--text-muted);margin-bottom:20px">Tu código es:</p>
+                <div class="share-code" id="codigo-creado">-</div>
+                <div style="background:var(--bg);padding:14px;border-radius:10px;margin:20px 0;text-align:left">
+                    <p style="font-size:13px;margin:0;color:var(--text)"><strong>📌 Guárdalo en las notas del móvil</strong></p>
+                    <p style="font-size:12px;margin:6px 0 0;color:var(--text-muted)">Tus datos se guardan en este navegador. El código te ayuda a identificar tu despedida.</p>
+                </div>
+                <button class="btn btn-primary" id="btn-empezar">¡A organizar! 🚀</button>
             </div>
         </div>
 
@@ -885,7 +921,8 @@ function createEvent() {
     save();
     sendWebhook();
     nav('screen-dashboard');
-    toast('¡Creada! Código: ' + code);
+    $('codigo-creado').textContent = code;
+    openModal('modal-creada');
 }
 
 function sendWebhook() {
@@ -1069,12 +1106,12 @@ function exportPDF() {
     doc.roundedRect(15, y-5, 180, 15, 3, 3, 'F');
     doc.setFontSize(10);
     doc.setTextColor(26,26,46);
-    doc.text('"'+frase+'" - www.despedidasgalicia.es', 105, y+4, {align:'center'});
+    doc.text('"'+frase+'" - despedidasgalicia.es', 105, y+4, {align:'center'});
     
     // Footer
     doc.setFontSize(9);
     doc.setTextColor(107,114,128);
-    doc.text('www.despedidasgalicia.es - 678 288 284 - Que viva a festa!', 105, 285, {align:'center'});
+    doc.text('despedidasgalicia.es - 678 288 284 - Que viva a festa!', 105, 285, {align:'center'});
     
     doc.save('despedida_'+E.city.toLowerCase().replace(/\s+/g,'_')+'_'+E.code+'.pdf');
     toast('PDF descargado');
@@ -1139,6 +1176,11 @@ document.addEventListener('DOMContentLoaded', function() {
     $('btn-send-wa').onclick = () => window.open('https://wa.me/?text='+encodeURIComponent($('wa-preview').textContent));
     $('btn-pdf').onclick = exportPDF;
     $('dash-code').onclick = () => { navigator.clipboard.writeText(E.code); toast('Código copiado'); };
+    
+    // Info datos
+    $('btn-info-datos').onclick = (e) => { e.preventDefault(); openModal('modal-info-datos'); };
+    $('btn-close-info-datos').onclick = () => closeModal('modal-info-datos');
+    $('btn-empezar').onclick = () => closeModal('modal-creada');
     
     // Close modals
     $$('.modal-close').forEach(btn => btn.onclick = () => closeModal(btn.dataset.close));
