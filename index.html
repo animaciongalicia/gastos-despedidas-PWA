@@ -944,20 +944,16 @@ function createEvent() {
 }
 
 function sendWebhook() {
-    fetch('https://hook.eu2.make.com/85goohcrnz1agha54456slen2cmye5zd', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({
-            evento_id: E.code,
-            organizador_nombre: E.organizer.name,
-            organizador_telefono: E.organizer.phone,
-            ciudad: E.city,
-            fecha_evento: E.date,
-            tipo_despedida: E.type,
-            created_at: E.createdAt
-        }),
-        mode: 'no-cors'
-    }).catch(() => {});
+    const params = new URLSearchParams({
+        evento_id: E.code,
+        organizador_nombre: E.organizer.name,
+        organizador_telefono: E.organizer.phone,
+        ciudad: E.city,
+        fecha_evento: E.date,
+        tipo_despedida: E.type,
+        created_at: E.createdAt
+    });
+    fetch('https://hook.eu2.make.com/85goohcrnz1agha54456slen2cmye5zd?' + params.toString()).catch(() => {});
 }
 
 function addCategory() {
