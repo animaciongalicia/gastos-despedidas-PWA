@@ -89,6 +89,24 @@
     #seo-footer { margin: 56px auto 36px; }
     #seo-footer .seo-card { font-size: 14px; padding: 16px 16px; }
   }
+
+/* ===== Fix footer vs. bottom nav (PWA) ===== */
+:root{
+  --pwa-bottom-nav: 92px; /* altura aproximada del menú inferior */
+}
+
+/* Reserva hueco para que el contenido no quede detrás del menú fijo */
+body{
+  padding-bottom: calc(var(--pwa-bottom-nav) + env(safe-area-inset-bottom, 0px));
+}
+
+/* Asegura que el footer puede quedar por encima del menú y sea clicable */
+#seo-footer{
+  margin-bottom: calc(var(--pwa-bottom-nav) + env(safe-area-inset-bottom, 0px) + 24px);
+}
+/* ========================================== */
+
+  
 </style>
 
 
